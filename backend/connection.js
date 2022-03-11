@@ -1,11 +1,11 @@
 const mysql = require("mysql");
 
 mysqlConnection = mysql.createConnection({
-  // this is the connection to the database
-  host: "localhost",
-  user: "root",
-  password: "password",
-  database: "musiclibrary",
+// this is the connection to the database
+  host: "remotemysql.com",
+  user: "OqC9416vf3",
+  password: "exFtpOIdTy",
+  database: "OqC9416vf3",
 });
 
 mysqlConnection.connect((err) => {
@@ -29,3 +29,5 @@ mysqlConnection.end((err) => {
     : `Connection ended`;
   console.log(messge);
 });
+
+
