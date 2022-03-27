@@ -1,6 +1,8 @@
 
 # ignore node_modules folder
-!node_modules/
+node_modules/
 # ignore lock file
-!package-lock.json
+package-lock.json
 # ignore .gitignore
+
+node_modules/*
