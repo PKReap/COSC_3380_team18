@@ -1,0 +1,7 @@
+{
+    "port" : 3306,
+    "host" : "uhmusic.xyz", 
+    "user" : "music",
+    "password" : "applicaionpassword",
+    "database" : "MusicLibrary"
+}
