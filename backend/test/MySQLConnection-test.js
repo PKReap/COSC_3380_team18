@@ -12,17 +12,16 @@ describe("MySQLConnection", () => {
   });
 
   it("validate users should be false when username or password is incorrect", () => {
-    validateUser("asdf", "test", (result) => {
-        const { validation } = result;
+    validateUser("asdf", "test", "POST", (result) => {
+      const { validation } = result;
       expect(validation).to.be.false;
     });
   });
 
   it("validate users should be true when username and password is correct", () => {
-    validateUser("thien", "userpassword", (result) => {
-        const { validation } = result;
+    validateUser("thien", "userpassword", "POST", (result) => {
+      const { validation } = result;
       expect(validation).to.be.true;
     });
   });
-  
 });
