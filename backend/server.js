@@ -1,8 +1,5 @@
 const http = require("http");
 const paths = require("./src/MySQLConnection");
-const { connect, close, connection } = require("./src/connection");
-
-// handle connection to database
 
 const server = http.createServer((req, res) => {
   const headers = {
@@ -29,7 +26,7 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const host = "localhost";
+const host = "0.0.0.0";
 const port = 3000;
 
 server.listen(port, host, () => {
