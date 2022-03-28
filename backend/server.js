@@ -36,31 +36,3 @@ server.listen(port, host, () => {
   console.log(`Server running at http://${host}:${port}/`);
 });
 
-server.on("connection", (socket) => {
-  console.log("New client connected");
-  if (connection.state === "disconnected") {
-    connect();
-  }
-});
-
-server.on("close", () => {
-  console.log("Server closed");
-  if (connection.state === "connected") {
-    close();
-  }
-});
-
-server.on("error", (err) => {
-  console.log("Server error:", err);
-  if (connection.state === "connected") {
-    close();
-  }
-});
-
-server.on("clientError", (err, socket) => {
-  console.log("Client error:", err);
-  socket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
-  if (connection.state === "connected") {
-    close();
-  }
-});
