@@ -7,6 +7,7 @@ function connect() {
 }
 function query(sql, callback) {
   connection.query(sql, (err, results) => {
+    if (err) throw err;
     callback(results);
   });
 }

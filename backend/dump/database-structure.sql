@@ -67,3 +67,34 @@ CREATE TRIGGER IF NOT EXISTS admin_trigger AFTER INSERT ON Users
             INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "Admin");
         END IF;
     END;
+
+
+-- if user tries to create a playlist with the same name as one of their own playlists delete the playlist
+CREATE TRIGGER IF NOT EXISTS playlist_trigger BEFORE INSERT ON Playlists
+    FOR EACH ROW
+    BEGIN
+        SELECT COUNT(*) INTO @count FROM Playlists WHERE PlaylistName = NEW.PlaylistName AND UserID = NEW.UserID;
+        IF (@count > 0) THEN
+            DELETE FROM Playlists WHERE PlaylistName = NEW.PlaylistName AND UserID = NEW.UserID;
+        END IF;
+    END;
+
+-- if added user has admin in their name remove admin from their name and make that user an admin
+CREATE TRIGGER IF NOT EXISTS admin_trigger AFTER INSERT ON Users
+    FOR EACH ROW
+    BEGIN
+        IF (NEW.Username LIKE '%Admin%') THEN
+            UPDATE Users SET Username = REPLACE(NEW.Username, "Admin", "") WHERE UserID = NEW.UserID;
+            INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "Admin");
+        END IF;
+    END;
+
+-- if added user has arist in their name remove arist from their name and make that user an arist but don't insert into user
+CREATE TRIGGER IF NOT EXISTS arist_trigger AFTER INSERT ON Users
+    FOR EACH ROW
+    BEGIN
+        IF (NEW.Username LIKE '%Arist%') THEN
+            UPDATE Users SET Username = REPLACE(NEW.Username, "Arist", "") WHERE UserID = NEW.UserID;
+            INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "Arist");
+        END IF;
+    END;

@@ -8,7 +8,7 @@ const server = http.createServer((req, res) => {
     "Access-Control-Max-Age": 2592000, // 30 days
     "Content-Type": "application/json",
   };
-  const path = req.url.slice(1);
+  const path = req.url.slice(5);
   console.log(path);
   const responseHandler = paths[path]; //  here it geting the function
   if (responseHandler) {
@@ -32,4 +32,3 @@ const port = 3000;
 server.listen(port, host, () => {
   console.log(`Server running at http://${host}:${port}/`);
 });
-
