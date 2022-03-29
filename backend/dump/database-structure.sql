@@ -17,16 +17,18 @@ CREATE TABLE
         PlaylistID INT NOT NULL AUTO_INCREMENT,
         UserID INT NOT NULL,
         PlaylistName VARCHAR(50) NOT NULL,
+        PlaylistLength DECIMAL(5,2) NOT NULL,
         PRIMARY KEY (PlaylistID),
         FOREIGN KEY (UserID) REFERENCES Users(UserID)
     );
 
 CREATE TABLE
     IF NOT EXISTS Libraries (
-        PRIMARY KEY (LibraryID, LibraryName),
+        PRIMARY KEY (LibraryID),
         ArtistID INT NOT NULL,
         LibraryID INT NOT NULL AUTO_INCREMENT,
         LibraryName VARCHAR(200) NOT NULL,
+        LibraryLength DECIMAL(5,2),
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
     );
 
@@ -38,16 +40,16 @@ CREATE TABLE
         TrackName VARCHAR(50) NOT NULL UNIQUE,
         ArtistID INT NOT NULL,
         ArtistName VARCHAR(50) NOT NULL,
-        TrackLength INT NOT NULL,
-        NumRatings INT,
+        TrackLength DECIMAL(5,2) NOT NULL,
+        Likes INT,
+        Dislikes INT,
         AverageRating INT,
         TrackGenre VARCHAR(50),
-        LibraryID INT NOT NULL,
-        LibraryName VARCHAR(200) NOT NULL,
+        LibraryID INT,
         Link VARCHAR(500) NOT NULL,
-        PlaylistID INT NOT NULL,
+        PlaylistID INT,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
-        FOREIGN KEY (LibraryID, LibraryName) REFERENCES Libraries(LibraryID, LibraryName),
+        FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
         
     );
@@ -60,3 +62,34 @@ INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password
 
 INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Dance Dance Revolution", 1);
 INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Electric Boogaloo", 1);
+
+
+-- User1 adds a track to his library
+delimiter //
+CREATE TRIGGER calc_avg_rating
+    AFTER INSERT ON Tracks
+    FOR EACH ROW
+    BEGIN
+        UPDATE Tracks
+        SET AverageRating = Likes / (Likes + Dislikes) * 100
+        WHERE TrackID = NEW.TrackID;
+    END; //
+
+delimiter ;
+
+delimiter //
+CREATE TRIGGER update_playlist_length
+    AFTER INSERT ON Tracks
+    FOR EACH ROW
+    BEGIN
+        UPDATE Playlists
+        SET PlaylistLength = PlaylistLength + NEW.TrackLength
+        WHERE PlaylistID = NEW.PlaylistID;
+        UPDATE Libraries
+        SET LibraryLength = LibraryLength + NEW.TrackLength
+        WHERE LibraryID = NEW.LibraryID;
+    END; //
+
+
+delimiter ;
+

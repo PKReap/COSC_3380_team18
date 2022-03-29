@@ -8,7 +8,7 @@ const server = http.createServer((req, res) => {
     "Access-Control-Max-Age": 0, // 30 days
     "Content-Type": "application/json",
   };
-  const path = req.url.slice(5);
+  const path = req.url.slice(5); // slice the "/api/"
   console.log(path);
   const responseHandler = paths[path]; //  here it geting the function
   if (responseHandler) {
