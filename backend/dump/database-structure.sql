@@ -20,12 +20,12 @@ CREATE TABLE
         FOREIGN KEY (UserID) REFERENCES Users(UserID)        
     );
 
-CREATE TABLE 
-    IF NOT EXISTS Playlists (
-        PRIMARY KEY (PlaylistID, PlaylistName),
-        UserID INT NOT NULL,
+CREATE TABLE
+    IF NOT EXISTS Playlist (
         PlaylistID INT NOT NULL AUTO_INCREMENT,
-        PlaylistName VARCHAR(20) NOT NULL,
+        UserID INT NOT NULL,
+        PlaylistName VARCHAR(50) NOT NULL,
+        PRIMARY KEY (PlaylistID),
         FOREIGN KEY (UserID) REFERENCES Users(UserID)
     );
 
@@ -53,33 +53,16 @@ CREATE TABLE
         LibraryID INT NOT NULL,
         LibraryName VARCHAR(20) NOT NULL,
         Link VARCHAR(500) NOT NULL,
+        PlaylistID INT NOT NULL,
+        FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
         FOREIGN KEY (LibraryID, LibraryName) REFERENCES Libraries(LibraryID, LibraryName),
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
+        
     );
 
-INSERT INTO Users (Username, UserPassword) VALUES ("thien", "userpassword");
-INSERT INTO UserType (UserID, UsersType) VALUES (1, "Admin");
-
-CREATE TRIGGER IF NOT EXISTS admin_trigger AFTER INSERT ON Users
-    FOR EACH ROW
-    BEGIN
-        IF (NEW.Username LIKE '%Admin%') THEN
-            INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "Admin");
-        END IF;
-    END;
 
 
--- if user tries to create a playlist with the same name as one of their own playlists delete the playlist
-CREATE TRIGGER IF NOT EXISTS playlist_trigger BEFORE INSERT ON Playlists
-    FOR EACH ROW
-    BEGIN
-        SELECT COUNT(*) INTO @count FROM Playlists WHERE PlaylistName = NEW.PlaylistName AND UserID = NEW.UserID;
-        IF (@count > 0) THEN
-            DELETE FROM Playlists WHERE PlaylistName = NEW.PlaylistName AND UserID = NEW.UserID;
-        END IF;
-    END;
 
--- if added user has arist or admin in their name remove arist or admin from their name and make that user an arist
 CREATE TRIGGER IF NOT EXISTS user_trigger AFTER INSERT ON Users
     FOR EACH ROW
     BEGIN

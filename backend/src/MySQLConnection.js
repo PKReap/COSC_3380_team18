@@ -53,4 +53,5 @@ function registerUser(username, password, callback) {
   });
 }
 
+
 module.exports = { validateUser, getAllUsers, registerUser };
