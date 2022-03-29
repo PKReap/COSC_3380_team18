@@ -26,7 +26,7 @@ CREATE TABLE
         PRIMARY KEY (LibraryID, LibraryName),
         ArtistID INT NOT NULL,
         LibraryID INT NOT NULL AUTO_INCREMENT,
-        LibraryName VARCHAR(20) NOT NULL,
+        LibraryName VARCHAR(200) NOT NULL,
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
     );
 
@@ -43,7 +43,7 @@ CREATE TABLE
         AverageRating INT,
         TrackGenre VARCHAR(20),
         LibraryID INT NOT NULL,
-        LibraryName VARCHAR(20) NOT NULL,
+        LibraryName VARCHAR(200) NOT NULL,
         Link VARCHAR(500) NOT NULL,
         PlaylistID INT NOT NULL,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
@@ -52,7 +52,11 @@ CREATE TABLE
         
     );
 
--- INsert a new user that is a artist
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Arist1", "Password123", "Arist");
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("User1", "Password123", "User");
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password123", "Admin");
+
+-- Artist1 makes a library named "Dance Dance Revolution"
+
+INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Dance Dance Revolution", 1);
+INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Electric Boogaloo", 1);
