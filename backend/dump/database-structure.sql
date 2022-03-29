@@ -13,9 +13,8 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS UserType (
-        PRIMARY KEY (UserTypeID),
-        TypeID INT NOT NULL AUTO_INCREMENT,
-        UserID INT NOT NULL,
+        PRIMARY KEY (TypeID),
+        TypeID INT NOT NULL,
         UsersType ENUM("Admin", "Arist", "User") NOT NULL,
         FOREIGN KEY (UserID) REFERENCES Users(UserID)        
     );
@@ -68,14 +67,14 @@ CREATE TRIGGER IF NOT EXISTS user_trigger AFTER INSERT ON Users
     BEGIN
         IF (NEW.Username LIKE '%Admin%') THEN
             UPDATE Users SET Username = REPLACE(NEW.Username, "Admin", "") WHERE UserID = NEW.UserID;
-            INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "Admin");
+            INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "Admin");
         END IF;
         IF (NEW.Username LIKE '%Arist%') THEN
             UPDATE Users SET Username = REPLACE(NEW.Username, "Arist", "") WHERE UserID = NEW.UserID;
-            INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "Arist");
+            INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "Arist");
         END IF;
         IF (NEW.Username LIKE '%User%') THEN
             UPDATE Users SET Username = REPLACE(NEW.Username, "User", "") WHERE UserID = NEW.UserID;
-            INSERT INTO UserType (UserID, UsersType) VALUES (NEW.UserID, "User");
+            INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "User");
         END IF;
     END;
