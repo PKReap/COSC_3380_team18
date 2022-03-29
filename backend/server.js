@@ -19,6 +19,7 @@ const server = http.createServer((req, res) => {
       });
     } else if (req.method === "POST") {
       req.on("data", (data) => {
+        const args =  Object.values(JSON.parse(data));
         responseHandler(...args, (result) => {
           res.end(JSON.stringify(result));
         });
@@ -30,7 +31,7 @@ const server = http.createServer((req, res) => {
   }
 });
 
-const host = "0.0.0.0";
+const host = "localhost";
 const port = 3000;
 
 server.listen(port, host, () => {

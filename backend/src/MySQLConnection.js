@@ -36,4 +36,18 @@ function getAllUsers(callback) {
   });
 }
 
-module.exports = { validateUser, getAllUsers };
+function registerUser(username, password, callback) {
+  const checkUserName = `SELECT * FROM Users WHERE Username = '${username}'`;
+  query(checkUserName, (result) => {
+    if (result.length > 0) {
+      callback({ error: "Username already exists" });
+      return;
+    }
+    const sql = `INSERT INTO Users (Username, UserPassword) VALUES ('${username}', '${password}')`;
+    query(sql, (result) => {
+      callback({ success: "User registered successfully" });
+    });
+  });
+}
+
+module.exports = { validateUser, getAllUsers, registerUser };
