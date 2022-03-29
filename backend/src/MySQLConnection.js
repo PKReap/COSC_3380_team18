@@ -1,7 +1,6 @@
 const { query } = require("./connection");
 
-function validateUser(username, password, method, callback) {
-  if (method !== "POST") return;
+function validateUser(username, password, callback) {
   if ((username + password).match(/[^a-zA-Z0-9]/)) {
     callback({ error: "Invalid username or password" });
     return;

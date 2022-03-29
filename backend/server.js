@@ -19,7 +19,7 @@ const server = http.createServer((req, res) => {
       });
     } else if (req.method === "POST") {
       req.on("data", (data) => {
-        responseHandler(...args, req.method, (result) => {
+        responseHandler(...args, (result) => {
           res.end(JSON.stringify(result));
         });
       });
