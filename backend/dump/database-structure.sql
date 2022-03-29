@@ -16,11 +16,11 @@ CREATE TABLE
         PRIMARY KEY (TypeID),
         TypeID INT NOT NULL,
         UsersType ENUM("Admin", "Arist", "User") NOT NULL,
-        FOREIGN KEY (UserID) REFERENCES Users(UserID)        
+        FOREIGN KEY (TypeID) REFERENCES Users(UserID)        
     );
 
 CREATE TABLE
-    IF NOT EXISTS Playlist (
+    IF NOT EXISTS Playlists (
         PlaylistID INT NOT NULL AUTO_INCREMENT,
         UserID INT NOT NULL,
         PlaylistName VARCHAR(50) NOT NULL,
@@ -61,20 +61,19 @@ CREATE TABLE
 
 
 
-
-CREATE TRIGGER IF NOT EXISTS user_trigger AFTER INSERT ON Users
+delimiter //
+CREATE TRIGGER AssignUserType AFTER INSERT ON Users
     FOR EACH ROW
     BEGIN
         IF (NEW.Username LIKE '%Admin%') THEN
             UPDATE Users SET Username = REPLACE(NEW.Username, "Admin", "") WHERE UserID = NEW.UserID;
             INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "Admin");
-        END IF;
-        IF (NEW.Username LIKE '%Arist%') THEN
+        ELSEIF (NEW.Username LIKE '%Arist%') THEN
             UPDATE Users SET Username = REPLACE(NEW.Username, "Arist", "") WHERE UserID = NEW.UserID;
             INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "Arist");
-        END IF;
-        IF (NEW.Username LIKE '%User%') THEN
+        ELSEIF (NEW.Username LIKE '%User%') THEN
             UPDATE Users SET Username = REPLACE(NEW.Username, "User", "") WHERE UserID = NEW.UserID;
             INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "User");
         END IF;
-    END;
+    END; //
+delimiter ;

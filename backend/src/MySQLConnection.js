@@ -1,7 +1,8 @@
 const { query } = require("./connection");
 
 function validateUser(username, password, callback) {
-  if ((username + password).match(/[^a-zA-Z0-9]/)) { // cleaning the username and password against SQL injection
+  if ((username + password).match(/[^a-zA-Z0-9]/)) {
+    // cleaning the username and password against SQL injection
     callback({ error: "Invalid username or password" });
     return;
   }
@@ -46,9 +47,12 @@ function registerUser(username, password, callback) {
       callback({ error: "Username already exists" });
       return;
     }
+    // Insert the new user into the database
+    
     const sql = `INSERT INTO Users (Username, UserPassword) VALUES ('${username}', '${password}')`;
-    query(sql, (result) => {
-      callback({ success: "User registered successfully" });
+    query(sql, (error, result) => {
+      if (error) callback({ error: "Error registering user" });
+      else callback({ success: "User registered successfully" });
     });
   });
 }
