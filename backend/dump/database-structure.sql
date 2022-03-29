@@ -7,17 +7,10 @@ CREATE TABLE
         UserID INT NOT NULL AUTO_INCREMENT,
         Username VARCHAR(50) NOT NULL UNIQUE,
         UserPassword VARCHAR(50) NOT NULL,
+        UserType ENUM("Admin", "Arist", "User") NOT NULL,
         PRIMARY KEY (UserID)
     );
 
-
-CREATE TABLE
-    IF NOT EXISTS UserType (
-        PRIMARY KEY (TypeID),
-        TypeID INT NOT NULL,
-        UsersType ENUM("Admin", "Arist", "User") NOT NULL,
-        FOREIGN KEY (TypeID) REFERENCES Users(UserID)        
-    );
 
 CREATE TABLE
     IF NOT EXISTS Playlists (
@@ -59,21 +52,7 @@ CREATE TABLE
         
     );
 
-
-
-delimiter //
-CREATE TRIGGER AssignUserType AFTER INSERT ON Users
-    FOR EACH ROW
-    BEGIN
-        IF (NEW.Username LIKE '%Admin%') THEN
-            UPDATE Users SET Username = REPLACE(NEW.Username, "Admin", "") WHERE UserID = NEW.UserID;
-            INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "Admin");
-        ELSEIF (NEW.Username LIKE '%Arist%') THEN
-            UPDATE Users SET Username = REPLACE(NEW.Username, "Arist", "") WHERE UserID = NEW.UserID;
-            INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "Arist");
-        ELSEIF (NEW.Username LIKE '%User%') THEN
-            UPDATE Users SET Username = REPLACE(NEW.Username, "User", "") WHERE UserID = NEW.UserID;
-            INSERT INTO UserType (TypeID, UsersType) VALUES (NEW.UserID, "User");
-        END IF;
-    END; //
-delimiter ;
+-- INsert a new user that is a artist
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Arist1", "Password123", "Arist");
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("User1", "Password123", "User");
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password123", "Admin");
