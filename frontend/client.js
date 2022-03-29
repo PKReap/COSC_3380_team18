@@ -1,7 +1,7 @@
 function validateUser(username, password) {
   const information = document.getElementById("information");
   $.ajax({
-    url: "http://localhost:3000/validateUser",
+    url: "http://uhmusic.xyz/api/validateUser",
     type: "POST",
     data: JSON.stringify({ username, password }),
     success: (data) => {

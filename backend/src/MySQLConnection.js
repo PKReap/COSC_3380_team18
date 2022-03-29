@@ -27,11 +27,13 @@ function validateUser(username, password, method, callback) {
   });
 }
 
-function getAllUsers(method, callback) {
-  if (method !== "GET") return;
+function getAllUsers(callback) {
   const sql = "SELECT * FROM Users";
   query(sql, (result) => {
-    callback(result);
+    const response = {
+      users: result,
+    };
+    callback(response);
   });
 }
 
