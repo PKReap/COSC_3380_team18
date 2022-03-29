@@ -15,8 +15,6 @@ function validateUser(username, password) {
   information.innerHTML = "validating...";
 }
 
-// render navbar
-
 function createElement(tag, params) {
   const element = document.createElement(tag);
   const keys = Object.keys(params);
@@ -33,30 +31,34 @@ function combine(elements) {
   for (let i = 1; i < Objects.length; i++) {
     parent.appendChild(Objects[i]);
   }
-  console.log(parent);
   return parent;
 }
 
-function createNavbar() {
-  const navbar = {
-    div: createElement("div", { className: "topnav", id: "navbar" }),
-    home: createElement("a", {
-      className: "active",
-      href: "#home",
-      innerHTML: "Home",
-    }),
-    login: createElement("a", { href: "#login", innerHTML: "Login" }),
-    register: createElement("a", { href: "#Register", innerHTML: "Register" }),
-  };
-  const nav = combine(navbar);
-  return nav;
+function createBlock(block) {
+  const result = {};
+  for (let key in block) {
+    result[key] = createElement(block[key].tag, block[key].params);
+  }
+  return combine(result);
 }
 
 const pageView = {
-  navbar: createNavbar(),
+  navbar: {
+    div: { tag: "div", params: { className: "topnav", id: "navbar" } },
+    home: {tag: "a", params: { className: "active", href: "#home", innerHTML: "Home" }},
+    login: { tag: "a", params: { href: "#login", innerHTML: "Login" } },
+    register: { tag: "a", params: { href: "#Register", innerHTML: "Register" } },
+  },
 };
 
-function render(page) {
-  const view = combine(page);
-  document.body.appendChild(view);
+function renderPage() {
+  localStorage.setItem("home", JSON.stringify(pageView));
+  const currentView = JSON.parse(localStorage.getItem("home"));
+  const view = {};
+  for (let key in currentView) {
+    view[key] = createBlock(currentView[key]);
+  }
+  for(let key in view){
+    document.body.appendChild(view[key]);
+  }
 }
