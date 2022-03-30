@@ -15,38 +15,22 @@ function validateUser(username, password) {
   information.innerHTML = "validating...";
 }
 
+
 function createElement(tag, params) {
   const element = document.createElement(tag);
-  const keys = Object.keys(params);
-
-  keys.forEach((key) => {
+  for(let key in params) {
     element[key] = params[key];
-  });
+  }
   return element;
 }
 
-function combine(elements) {
-  const Objects = Object.values(elements);
-  const parent = Objects[0];
-  for (let i = 1; i < Objects.length; i++) {
-    parent.appendChild(Objects[i]);
-  }
-  return parent;
-}
-
-function createBlock(block) {
-  const result = {};
-  for (let key in block) {
-    result[key] = createElement(block[key].tag, block[key].params);
-  }
-  return combine(result);
-}
 
 function getAllUsers(){
   const element = document.getElementById("UserTable");
   $.ajax({
     url: "http://uhmusic.xyz/api/getAllUsers",
-    type: "GET",
+    type: "POST",
+    data: {},
     success: (data) => {
       const { users } = data;
       element.innerHTML = "Name | ID | Type"
@@ -60,5 +44,21 @@ function getAllUsers(){
       element.innerHTML = JSON.stringify(err);
     },
   });
-  element.innerHTML = "getting users...";
 }
+
+
+function addTrackLibrary(TrackName, ArtistID, TrackLength, Rating, AvgRating, Genre, LibraryID){
+  $.ajax({
+      url: "http://uhmusic.xyz/api/addTrackLibrary",
+      type: "POST",
+      data: JSON.stringify({ TrackName, ArtistID, TrackLength, Rating, AvgRating, Genre, LibraryID }),
+      success: (data) => {
+        const { success, error } = data;
+        console.log(error ? error : success);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+}
+
