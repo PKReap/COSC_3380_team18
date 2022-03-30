@@ -47,8 +47,7 @@ function registerUser(username, password, callback) {
       callback({ error: "Username already exists" });
       return;
     }
-    // Insert the new user into the database
-    
+        
     const sql = `INSERT INTO Users (Username, UserPassword) VALUES ('${username}', '${password}')`;
     query(sql, (error, result) => {
       if (error) callback({ error: "Error registering user" });
