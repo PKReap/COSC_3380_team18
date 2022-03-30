@@ -1,9 +1,9 @@
-function validateUser(Username, UserPassword) {
+function validateUser(username, password) {
   const information = document.getElementById("information");
   $.ajax({
     url: "http://uhmusic.xyz/api/validateUser",
     type: "POST",
-    data: JSON.stringify({ Username, UserPassword }),
+    data: JSON.stringify({ username, password }),
     success: (data) => {
       const validation = data.validation;
       information.innerHTML = JSON.stringify(validation);
@@ -15,22 +15,38 @@ function validateUser(Username, UserPassword) {
   information.innerHTML = "validating...";
 }
 
-
 function createElement(tag, params) {
   const element = document.createElement(tag);
-  for(let key in params) {
+  const keys = Object.keys(params);
+
+  keys.forEach((key) => {
     element[key] = params[key];
-  }
+  });
   return element;
 }
 
+function combine(elements) {
+  const Objects = Object.values(elements);
+  const parent = Objects[0];
+  for (let i = 1; i < Objects.length; i++) {
+    parent.appendChild(Objects[i]);
+  }
+  return parent;
+}
+
+function createBlock(block) {
+  const result = {};
+  for (let key in block) {
+    result[key] = createElement(block[key].tag, block[key].params);
+  }
+  return combine(result);
+}
 
 function getAllUsers(){
   const element = document.getElementById("UserTable");
   $.ajax({
     url: "http://uhmusic.xyz/api/getAllUsers",
-    type: "POST",
-    data: {},
+    type: "GET",
     success: (data) => {
       const { users } = data;
       element.innerHTML = "Name | ID | Type"
@@ -44,21 +60,6 @@ function getAllUsers(){
       element.innerHTML = JSON.stringify(err);
     },
   });
-}
-
-
-function addTrackLibrary(TrackName, ArtistID, TrackLength, Rating, AvgRating, Genre, LibraryID){
-  $.ajax({
-      url: "http://uhmusic.xyz/api/addTrackLibrary",
-      type: "POST",
-      data: JSON.stringify({ TrackName, ArtistID, TrackLength, Rating, AvgRating, Genre, LibraryID }),
-      success: (data) => {
-        const { success, error } = data;
-        console.log(error ? error : success);
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
+  element.innerHTML = "getting users...";
 }
 
