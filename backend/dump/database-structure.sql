@@ -18,7 +18,7 @@ CREATE TABLE
         PlaylistID INT NOT NULL AUTO_INCREMENT,
         UserID INT NOT NULL,
         PlaylistName VARCHAR(50) NOT NULL,
-        PlaylistLength TIME,
+        PlaylistLength TIME DEFAULT "00:00:00",
         PRIMARY KEY (PlaylistID),
         FOREIGN KEY (UserID) REFERENCES Users(UserID)
     );
@@ -29,7 +29,7 @@ CREATE TABLE
         ArtistID INT NOT NULL,
         LibraryID INT NOT NULL AUTO_INCREMENT,
         LibraryName VARCHAR(200) NOT NULL,
-        LibraryLength TIME,
+        LibraryLength TIME DEFAULT "00:00:00",
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
     );
 
@@ -41,7 +41,7 @@ CREATE TABLE
         TrackName VARCHAR(50) NOT NULL UNIQUE,
         ArtistID INT NOT NULL,
         TrackLength TIME,
-        Likes INT,
+        Rating INT,
         AverageRating DECIMAL(3,2),
         TrackGenre VARCHAR(50),
         LibraryID INT,
@@ -70,8 +70,8 @@ INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password
 
 -- Artist1 makes a library named "Dance Dance Revolution"
 
-INSERT INTO Libraries (LibraryName, ArtistID, LibraryLength ) VALUES ("Dance Dance Revolution", 1, 0);
-INSERT INTO Libraries (LibraryName, ArtistID, LibraryLength) VALUES ("Electric Boogaloo", 1, 0);
+INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Dance Dance Revolution", 1);
+INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Electric Boogaloo", 1);
 
 
 -- trigger to add rating to track
@@ -85,7 +85,7 @@ CREATE TRIGGER update_avg_insert
         SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
-        SET Likes = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
+        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
         WHERE TrackID = NEW.TrackID;
     END //
 
@@ -99,7 +99,7 @@ CREATE TRIGGER update_avg_update
         SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
-        SET Likes = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
+        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
         WHERE TrackID = NEW.TrackID;
     END //
 
@@ -120,7 +120,7 @@ CREATE TRIGGER update_playlist_length
 delimiter ;
 
 --  "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09"
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Likes, AverageRating, TrackGenre, LibraryID, PlaylistID, Link) 
+INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link) 
 VALUES ("Moonlight Sonata", 1,  "00:05:02", 0, 0, "Classical", 1, NULL, "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09");
 
 
