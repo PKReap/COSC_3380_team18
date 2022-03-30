@@ -110,10 +110,10 @@ CREATE TRIGGER update_playlist_length
     FOR EACH ROW
     BEGIN
         UPDATE Playlists
-        SET PlaylistLength = PlaylistLength + NEW.TrackLength
+        SET PlaylistLength = (SELECT SUM(TrackLength) FROM Tracks WHERE PlaylistID = NEW.PlaylistID)
         WHERE PlaylistID = NEW.PlaylistID;
         UPDATE Libraries
-        SET LibraryLength = LibraryLength + NEW.TrackLength
+        SET LibraryLength = (SELECT SUM(TrackLength) FROM Tracks WHERE LibraryID = NEW.LibraryID)
         WHERE LibraryID = NEW.LibraryID;
     END; //
 
@@ -128,4 +128,4 @@ VALUES ("Moonlight Sonata", 1,  "00:05:02", 0, 0, "Classical", 1, NULL, "https:/
 INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (1, 1, 1);
 INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (2, 1, 0);
 UPDATE TrackRatings SET Rating = 1 WHERE UserID = 2 AND TrackID = 1;
-SELECT * from Tracks
+SELECT * FROM Libraries
