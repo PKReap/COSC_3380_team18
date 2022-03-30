@@ -42,7 +42,7 @@ CREATE TABLE
         ArtistID INT NOT NULL,
         TrackLength TIME,
         Likes INT,
-        AverageRating DECIMAL(10,5),
+        AverageRating DECIMAL(3,2),
         TrackGenre VARCHAR(50),
         LibraryID INT,
         PlaylistID INT,
@@ -82,7 +82,7 @@ CREATE TRIGGER update_avg_insert
     FOR EACH ROW
     BEGIN
         UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID) 
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
         SET Likes = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
@@ -96,7 +96,7 @@ CREATE TRIGGER update_avg_update
     FOR EACH ROW
     BEGIN
         UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID) 
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
         SET Likes = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
