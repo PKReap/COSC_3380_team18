@@ -42,23 +42,23 @@ function createBlock(block) {
   return combine(result);
 }
 
-const pageView = {
-  navbar: {
-    div: { tag: "div", params: { className: "topnav", id: "navbar" } },
-    home: {tag: "a", params: { className: "active", href: "#home", innerHTML: "Home" }},
-    login: { tag: "a", params: { href: "#login", innerHTML: "Login" } },
-    register: { tag: "a", params: { href: "#Register", innerHTML: "Register" } },
-  },
-};
-
-function renderPage() {
-  localStorage.setItem("home", JSON.stringify(pageView));
-  const currentView = JSON.parse(localStorage.getItem("home"));
-  const view = {};
-  for (let key in currentView) {
-    view[key] = createBlock(currentView[key]);
-  }
-  for(let key in view){
-    document.body.appendChild(view[key]);
-  }
+function getAllUsers(){
+  const element = document.getElementById("UserTable");
+  $.ajax({
+    url: "http://uhmusic.xyz/api/getAllUsers",
+    type: "GET",
+    success: (data) => {
+      const { users } = data;
+      element.innerHTML = "Name | ID | Type"
+      users.forEach((user) => {
+        const { Username, UserID , UserType } = user;
+        const userElement = createElement("li", { innerHTML: `${Username} - ${UserID} - ${UserType}` });
+        element.appendChild(userElement);
+      });
+    },
+    error: (err) => {
+      element.innerHTML = JSON.stringify(err);
+    },
+  });
+  element.innerHTML = "getting users...";
 }
