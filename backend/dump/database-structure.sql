@@ -46,8 +46,8 @@ CREATE TABLE
         AverageRating INT,
         TrackGenre VARCHAR(50),
         LibraryID INT,
-        Link VARCHAR(500) NOT NULL,
         PlaylistID INT,
+        Link VARCHAR(500) NOT NULL,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
         FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
@@ -89,7 +89,5 @@ CREATE TRIGGER update_playlist_length
         SET LibraryLength = LibraryLength + NEW.TrackLength
         WHERE LibraryID = NEW.LibraryID;
     END; //
-
-
 delimiter ;
 
