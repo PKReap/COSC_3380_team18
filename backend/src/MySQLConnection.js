@@ -43,12 +43,11 @@ function registerUser(username, password, callback) {
   }
   const checkUserName = `SELECT * FROM Users WHERE Username = '${username}'`;
   query(checkUserName, (result) => {
-    if (result) {
+    if (result.length > 0) {
       callback({ error: "Username already exists" });
       return;
     }
-    // Insert the new user into the database
-    
+        
     const sql = `INSERT INTO Users (Username, UserPassword) VALUES ('${username}', '${password}')`;
     query(sql, (error, result) => {
       if (error) callback({ error: "Error registering user" });
@@ -57,14 +56,5 @@ function registerUser(username, password, callback) {
   });
 }
 
-function getAllUsersType(callback) {
-  const sql = "SELECT * FROM UserType";
-  query(sql, (result) => {
-    const response = {
-      users: result,
-    };
-    callback(response);
-  });
-}
 
-module.exports = { validateUser, getAllUsers, registerUser, getAllUsersType };
+module.exports = { validateUser, getAllUsers, registerUser };
