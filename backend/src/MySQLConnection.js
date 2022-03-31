@@ -71,7 +71,7 @@ function registerUser(args, callback) {
 
 function makeArtist(args, callback) {
   const { userID } = args;
-  const sql = `UPDATE Users SET UserType = ${UserType.Artist} WHERE UserID = ${userID}`;
+  const sql = `UPDATE Users SET UserType = ${UserTypes.Artist} WHERE UserID = ${userID}`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error making user an Artist" });
     else callback({ success: "Artist succfully made" });
