@@ -4,27 +4,21 @@ const paths = require("./src/MySQLConnection");
 const server = http.createServer((req, res) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, GET",
-    "Access-Control-Max-Age": 0, // 30 days
+    "Access-Control-Allow-Methods": "POST",
+    "Access-Control-Max-Age": 0, 
     "Content-Type": "application/json",
   };
-  const path = req.url.slice(5); // slice the "/api/"
+  const path = req.url.slice(5);
   console.log(path);
   const responseHandler = paths[path]; //  here it geting the function
   if (responseHandler) {
     res.writeHead(200, headers);
-    if (req.method === "GET") {
-      responseHandler((result) => {
+    req.on("data", (data) => {
+      const args = JSON.parse(data);
+      responseHandler(args, (result) => {
         res.end(JSON.stringify(result));
       });
-    } else if (req.method === "POST") {
-      req.on("data", (data) => {
-        const args =  Object.values(JSON.parse(data));
-        responseHandler(...args, (result) => {
-          res.end(JSON.stringify(result));
-        });
-      });
-    }
+    });
   } else {
     res.writeHead(404, headers);
     res.end(JSON.stringify({ error: "Not found" }));

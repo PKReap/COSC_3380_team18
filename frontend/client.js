@@ -46,7 +46,8 @@ function getAllUsers(){
   const element = document.getElementById("UserTable");
   $.ajax({
     url: "http://uhmusic.xyz/api/getAllUsers",
-    type: "GET",
+    type: "POST",
+    data: JSON.stringify({}),
     success: (data) => {
       const { users } = data;
       element.innerHTML = "Name | ID | Type"
@@ -62,4 +63,3 @@ function getAllUsers(){
   });
   element.innerHTML = "getting users...";
 }
-

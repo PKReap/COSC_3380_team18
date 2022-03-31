@@ -1,6 +1,7 @@
 const { query } = require("./connection");
 
-function validateUser(username, password, callback) {
+function validateUser(args , callback) {
+  const {username , password} = args;
   if ((username + password).match(/[^a-zA-Z0-9]/)) {
     // cleaning the username and password against SQL injection
     callback({ error: "Invalid username or password" });
@@ -8,14 +9,19 @@ function validateUser(username, password, callback) {
   }
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
   query(sql, (result) => {
+    
+    const { UserID } = result.users;
+    
     const response = {
       validation: result.length > 0,
+      userID: UserID,
     };
+
     callback(response);
   });
 }
 
-function getAllUsers(callback) {
+function getAllUsers(args ,callback) {
   const sql = "SELECT * FROM Users";
   query(sql, (result) => {
     const response = {
@@ -25,7 +31,8 @@ function getAllUsers(callback) {
   });
 }
 
-function registerUser(username, password, callback) {
+function registerUser(args , callback) {
+  const {username , password} = args;
   if ((username + password).match(/[^a-zA-Z0-9]/)) {
     callback({ error: "Invalid username or password" });
     return;
