@@ -1,9 +1,9 @@
 function createElement(tag, params) {
   const element = document.createElement(tag);
   const keys = Object.keys(params);
-  keys.forEach((key) => {
+  for (let key of keys) {
     element[key] = params[key];
-  });
+  }
   return element;
 }
 
@@ -33,17 +33,15 @@ function getAllUsers() {
     success: (data) => {
       const { users } = data;
       users.forEach((user) => {
-        
         const { Username, UserID, UserType } = user;
         const row = createElement("tr", {});
         const userID = createElement("td", {});
-        const checkbox = createElement("input", {
-          type: "checkbox",
-          name: UserID,
-          value: UserID,
-        });
-        userID.appendChild(checkbox);
-
+        userID.appendChild(
+          createElement("input", {
+            type: "checkbox",
+            value: UserID,
+          })
+        );
         const columns = [
           userID,
           createElement("td", { innerHTML: Username }),
@@ -60,13 +58,25 @@ function getAllUsers() {
       element.innerHTML = JSON.stringify(err);
     },
   });
+
+  const information = document.getElementById("information");
+  information.addEventListener("click", (event) => {
+    if (information.innerHTML === "information") {
+      information.innerHTML = "clicked";
+    } else {
+      information.innerHTML = "information";
+    }
+  });
 }
 
-function saveInformation(){
-  localStorage.setItem("current",12313);
+function saveInformation() {
+  localStorage.setItem("current", 12313);
 }
 
-function getInformation(){
-  const current = localStorage.getItem("current");
-  console.log(current);
+function getInformation() {
+  const element = document.getElementById("UserTable");
+  const checkboxes = element.querySelectorAll("input[type=checkbox]");
+  const selected = [].filter.call(checkboxes, (checkbox) => checkbox.checked);
+  const values = selected.map((checkbox) => checkbox.value);
+  console.log(values);
 }

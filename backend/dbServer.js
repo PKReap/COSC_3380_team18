@@ -140,8 +140,6 @@ const server = http.createServer(function (req, res) {
    }
    if(req.url === '/createPlaylist' && req.method == 'POST'){
     req.on('data', data=>{
-      
-
     })
  }
 
