@@ -1,3 +1,15 @@
+
+function createElement(tag, params) {
+  const element = document.createElement(tag);
+  const keys = Object.keys(params);
+
+  keys.forEach((key) => {
+    element[key] = params[key];
+  });
+  return element;
+}
+
+
 function validateUser(username, password) {
   const information = document.getElementById("information");
   $.ajax({
@@ -13,33 +25,6 @@ function validateUser(username, password) {
     },
   });
   information.innerHTML = "validating...";
-}
-
-function createElement(tag, params) {
-  const element = document.createElement(tag);
-  const keys = Object.keys(params);
-
-  keys.forEach((key) => {
-    element[key] = params[key];
-  });
-  return element;
-}
-
-function combine(elements) {
-  const Objects = Object.values(elements);
-  const parent = Objects[0];
-  for (let i = 1; i < Objects.length; i++) {
-    parent.appendChild(Objects[i]);
-  }
-  return parent;
-}
-
-function createBlock(block) {
-  const result = {};
-  for (let key in block) {
-    result[key] = createElement(block[key].tag, block[key].params);
-  }
-  return combine(result);
 }
 
 function getAllUsers(){
