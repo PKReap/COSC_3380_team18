@@ -1,5 +1,12 @@
 const { query } = require("./connection");
 
+const UserTypes = {
+  Admin: 1,
+  Artist: 2,
+  User: 3,
+}
+
+
 function validateUser(args, callback) {
   const { username, password } = args;
   if ((username + password).match(/[^a-zA-Z0-9]/)) {
@@ -64,7 +71,7 @@ function registerUser(args, callback) {
 
 function makeArtist(args, callback) {
   const { userID } = args;
-  const sql = `UPDATE Users SET UserType = 2 WHERE UserID = ${userID}`;
+  const sql = `UPDATE Users SET UserType = ${UserType.Artist} WHERE UserID = ${userID}`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error making user an Artist" });
     else callback({ success: "Artist succfully made" });
@@ -73,7 +80,7 @@ function makeArtist(args, callback) {
 
 function makeUser(args, callback) {
   const { userID } = args;
-  const sql = `UPDATE Users SET UserType = 3 WHERE UserID = ${userID}`;
+  const sql = `UPDATE Users SET UserType = ${UserTypes.User} WHERE UserID = ${userID}`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error updating to User" });
     else callback({ success: "User succfully updated" });
@@ -82,7 +89,7 @@ function makeUser(args, callback) {
 
 function makeAdmin(args, callback) {
   const { userID } = args;
-  const sql = `UPDATE Users SET UserType = 1 WHERE UserID = ${userID}`;
+  const sql = `UPDATE Users SET UserType = ${UserTypes.Admin} WHERE UserID = ${userID}`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error updating to Admin"});
     else callback({ success: "Admin succfully updated" });
