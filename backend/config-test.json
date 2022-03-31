@@ -1,7 +1,7 @@
 {
     "port" : 3306,
-    "host" : "remotemysql.com", 
-    "user" : "OqC9416vf3",
-    "password" : "exFtpOIdTy",
-    "database" : "OqC9416vf3"
+    "host" : "localhost:3306", 
+    "user" : "root",
+    "password" : "password",
+    "database" : "musiclibrary"
 }

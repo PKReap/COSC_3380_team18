@@ -9,6 +9,7 @@ CREATE TABLE
         Username VARCHAR(50) NOT NULL UNIQUE,
         UserPassword VARCHAR(50) NOT NULL,
         UserType ENUM("Admin", "Arist", "User") NOT NULL,
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         PRIMARY KEY (UserID)
     );
 
@@ -21,6 +22,7 @@ CREATE TABLE
         PlaylistLength TIME DEFAULT "00:00:00",
         PRIMARY KEY (PlaylistID),
         FOREIGN KEY (UserID) REFERENCES Users(UserID)
+        
     );
 
 CREATE TABLE
@@ -129,3 +131,4 @@ INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (1, 1, 1);
 INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (2, 1, 0);
 UPDATE TrackRatings SET Rating = 1 WHERE UserID = 2 AND TrackID = 1;
 SELECT * from Tracks
+

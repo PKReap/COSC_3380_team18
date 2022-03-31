@@ -1,7 +1,7 @@
 const { query } = require("./connection");
 
-function validateUser(args , callback) {
-  const {username , password} = args;
+function validateUser(args, callback) {
+  const { username, password } = args;
   if ((username + password).match(/[^a-zA-Z0-9]/)) {
     // cleaning the username and password against SQL injection
     callback({ error: "Invalid username or password" });
@@ -9,9 +9,8 @@ function validateUser(args , callback) {
   }
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
   query(sql, (result) => {
-    
     const { UserID } = result.users;
-    
+
     const response = {
       validation: result.length > 0,
       userID: UserID,
@@ -21,18 +20,18 @@ function validateUser(args , callback) {
   });
 }
 
-function getAllUsers(args ,callback) {
+function getAllUsers(args, callback) {
   const sql = "SELECT * FROM Users";
   query(sql, (result) => {
     const response = {
-      users: result,
+      users: result.filter((user) => user.IsDeleted === 0),
     };
     callback(response);
   });
 }
 
-function registerUser(args , callback) {
-  const {username , password} = args;
+function registerUser(args, callback) {
+  const { username, password } = args;
   if ((username + password).match(/[^a-zA-Z0-9]/)) {
     callback({ error: "Invalid username or password" });
     return;
@@ -54,7 +53,7 @@ function registerUser(args , callback) {
       callback({ error: "Username already exists" });
       return;
     }
-        
+
     const sql = `INSERT INTO Users (Username, UserPassword) VALUES ('${username}', '${password}')`;
     query(sql, (error, result) => {
       if (error) callback({ error: "Error registering user" });
@@ -63,5 +62,48 @@ function registerUser(args , callback) {
   });
 }
 
+function makeArtist(args, callback) {
+  const { userID } = args;
+  const sql = `UPDATE Users SET UserType = 2 WHERE UserID = ${userID}`;
+  query(sql, (error, result) => {
+    if (error) callback({ error: "Error making user an Artist" });
+    else callback({ success: "Artist succfully made" });
+  });
+}
 
-module.exports = { validateUser, getAllUsers, registerUser };
+function makeUser(args, callback) {
+  const { userID } = args;
+  const sql = `UPDATE Users SET UserType = 3 WHERE UserID = ${userID}`;
+  query(sql, (error, result) => {
+    if (error) callback({ error: "Error updating to User" });
+    else callback({ success: "User succfully updated" });
+  });
+}
+
+function makeAdmin(args, callback) {
+  const { userID } = args;
+  const sql = `UPDATE Users SET UserType = 1 WHERE UserID = ${userID}`;
+  query(sql, (error, result) => {
+    if (error) callback({ error: "Error updating to Admin"});
+    else callback({ success: "Admin succfully updated" });
+  });
+}
+
+function deleteUser(args, callback) {
+  const { userID } = args;
+  const sql = `UPDATE Users SET IsDeleted = 1 WHERE UserID = ${userID}`;
+  query(sql, (error, result) => {
+    if (error) callback({ error: "Error deleting user" });
+    else callback({ success: "User succfully deleted" });
+  });
+}
+
+module.exports = {
+  validateUser,
+  getAllUsers,
+  registerUser,
+  makeArtist,
+  makeUser,
+  makeAdmin,
+  deleteUser,
+};

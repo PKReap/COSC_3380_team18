@@ -30,7 +30,7 @@
   position:relative;
 }
 #table-scroll {
-  height:200px;
+  height:250px;
   overflow:scroll;  
   margin-top:5px;
   width: 100%;
@@ -45,6 +45,6 @@
   text-align: center;
 }
 #table-wrapper table td:first-child {
-  width:10%;
+  width:5%;
 }
 

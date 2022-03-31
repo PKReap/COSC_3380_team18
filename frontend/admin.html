@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="./client.js"></script>
-
+    <script src="./admin.js"></script>
     <title>Document</title>
   </head>
   <body onload="getAllUsers()">
@@ -27,7 +26,13 @@
         </table>
       </div>
     </div>
-    <button onclick="getInformation()", id = "information">information</button>
+    <select id="operation">
+      <option value="makeUser">Make User</option>
+      <option value="makeArtist">Make Artist</option>
+      <option value="makeAdmin">Make Admin</option>
+      <option value="deleteUser">DELETE</option>
+    </select>
+    <button onclick="performOperation()">go</button>
   </body>
 </html>
 
