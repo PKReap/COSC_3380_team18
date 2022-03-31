@@ -33,16 +33,26 @@ function getAllUsers() {
     success: (data) => {
       const { users } = data;
       users.forEach((user) => {
+        
         const { Username, UserID, UserType } = user;
         const row = createElement("tr", {});
+        const userID = createElement("td", {});
+        const checkbox = createElement("input", {
+          type: "checkbox",
+          name: UserID,
+          value: UserID,
+        });
+        userID.appendChild(checkbox);
+
         const columns = [
-          createElement("td", { innerHTML: UserID }),
+          userID,
           createElement("td", { innerHTML: Username }),
           createElement("td", { innerHTML: UserType }),
         ];
         columns.forEach((column) => {
           row.appendChild(column);
         });
+
         element.appendChild(row);
       });
     },
@@ -50,4 +60,13 @@ function getAllUsers() {
       element.innerHTML = JSON.stringify(err);
     },
   });
+}
+
+function saveInformation(){
+  localStorage.setItem("current",12313);
+}
+
+function getInformation(){
+  const current = localStorage.getItem("current");
+  console.log(current);
 }
