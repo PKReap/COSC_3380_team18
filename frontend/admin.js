@@ -35,7 +35,6 @@ function getAllUsers() {
         columns.forEach((column) => {
           row.appendChild(column);
         });
-
         element.appendChild(row);
       });
     },

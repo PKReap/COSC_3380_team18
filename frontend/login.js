@@ -1,14 +1,20 @@
 const host = "http://uhmusic.xyz/api/";
 
-function validateUser(username, password) {
+function validateUser() {
   const information = document.getElementById("information");
   $.ajax({
     url: `${host}validateUser`,
     type: "POST",
     data: JSON.stringify({ username, password }),
     success: (data) => {
-      const validation = data.validation;
-      information.innerHTML = JSON.stringify(validation);
+      const { validation, userID } = data;
+      if (validation) {
+        localStorage.setItem("user", `${userID}`);
+        window.location.href = "./playlists.html";
+      }
+      else{
+        information.innerHTML = "Invalid username or password";
+      }
     },
     error: (err) => {
       information.innerHTML = JSON.stringify(err);
@@ -16,4 +22,9 @@ function validateUser(username, password) {
   });
   information.innerHTML = "validating...";
 }
+
+
+localStorage.setItem("user", "default");
+
+
 

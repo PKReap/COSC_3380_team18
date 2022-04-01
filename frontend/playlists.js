@@ -1,5 +1,8 @@
 const host = "http://uhmusic.xyz/api/";
 
+let currentUserID;
+
+
 function createElement(tag, params) {
   const element = document.createElement(tag);
   const keys = Object.keys(params);
@@ -11,12 +14,7 @@ function createElement(tag, params) {
 
 function getAllTracks() {
   const { UserID } = JSON.parse(localStorage.getItem("user"));
-  const element = document.getElementById("TrackTable");
-  $.ajax({
-    url: `${host}getAllTracks`,
-    type: "POST",
-    data: JSON.stringify({ UserID }),
-    success: (data) => {},
-    error: (err) => {},
-  });
+  currentUserID = UserID;
+  const element = document.getElementById("TrackTable"); 
 }
+

@@ -21,6 +21,7 @@ CREATE TABLE
         PlaylistName VARCHAR(50) NOT NULL,
         PlaylistLength TIME DEFAULT "00:00:00",
         PRIMARY KEY (PlaylistID),
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (UserID) REFERENCES Users(UserID)
         
     );
@@ -32,6 +33,7 @@ CREATE TABLE
         LibraryID INT NOT NULL AUTO_INCREMENT,
         LibraryName VARCHAR(200) NOT NULL,
         LibraryLength TIME DEFAULT "00:00:00",
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
     );
 
@@ -49,6 +51,7 @@ CREATE TABLE
         LibraryID INT,
         PlaylistID INT,
         Link VARCHAR(500) NOT NULL,
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
         FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
         FOREIGN KEY (ArtistID) REFERENCES Users(UserID)
@@ -62,6 +65,7 @@ CREATE TABLE
         UserID INT NOT NULL,
         TrackID INT NOT NULL,
         Rating INT,
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (UserID) REFERENCES Users(UserID),
         FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
@@ -84,10 +88,10 @@ CREATE TRIGGER update_avg_insert
     FOR EACH ROW
     BEGIN
         UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = 0)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
-        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
+        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1 AND IsDeleted = 0)
         WHERE TrackID = NEW.TrackID;
     END //
 
@@ -98,10 +102,10 @@ CREATE TRIGGER update_avg_update
     FOR EACH ROW
     BEGIN
         UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = 0)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
-        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1) 
+        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1 AND IsDeleted = 0)
         WHERE TrackID = NEW.TrackID;
     END //
 
@@ -112,11 +116,11 @@ CREATE TRIGGER update_playlist_length
     FOR EACH ROW
     BEGIN
         UPDATE Playlists
-        SET PlaylistLength = PlaylistLength + NEW.TrackLength
-        WHERE PlaylistID = NEW.PlaylistID;
+        SET PlaylistLength = PlaylistLength + NEW.TrackLength 
+        WHERE PlaylistID = NEW.PlaylistID AND IsDeleted = 0;
         UPDATE Libraries
         SET LibraryLength = LibraryLength + NEW.TrackLength
-        WHERE LibraryID = NEW.LibraryID;
+        WHERE LibraryID = NEW.LibraryID AND IsDeleted = 0;
     END; //
 
 delimiter ;
