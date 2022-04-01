@@ -28,9 +28,10 @@ function getAllUsers() {
           })
         );
         const columns = [
+          
           userID,
-          createElement("td", { innerHTML: Username }),
-          createElement("td", { innerHTML: UserType }),
+          createElement("td", { style: "hover: true;", innerHTML: Username }),
+          createElement("td", {  style: "hover: true;", innerHTML: UserType }),
         ];
         columns.forEach((column) => {
           row.appendChild(column);
@@ -64,3 +65,7 @@ function performOperation() {
     });
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  getAllUsers();
+});

@@ -50,7 +50,7 @@ CREATE TABLE
         TrackGenre VARCHAR(50),
         LibraryID INT,
         PlaylistID INT,
-        Link VARCHAR(500) NOT NULL,
+        AudioFile BLOB,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
         FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
@@ -122,17 +122,5 @@ CREATE TRIGGER update_playlist_length
         SET LibraryLength = LibraryLength + NEW.TrackLength
         WHERE LibraryID = NEW.LibraryID AND IsDeleted = 0;
     END; //
-
 delimiter ;
-
---  "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09"
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link) 
-VALUES ("Moonlight Sonata", 1,  "00:05:02", 0, 0, "Classical", 1, NULL, "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09");
-
-
--- Add a rating to a track
-INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (1, 1, 1);
-INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (2, 1, 0);
-UPDATE TrackRatings SET Rating = 1 WHERE UserID = 2 AND TrackID = 1;
-SELECT * from Tracks
 

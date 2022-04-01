@@ -6,15 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="./admin.js"></script>
-    <style>
-      tr :hover {
-        background-color: #f5f5f5;
-      };
-    </style>
+    <script src="./library.js"></script>
     <title>Document</title>
   </head>
-  <body>
+  <body onload="getAllUsers()">
     <div class="topnav">
       <a class="active" href="index.html">Log out</a>
     </div>
@@ -22,21 +17,30 @@
       <div id="table-scroll">
         <table>
           <thead>
-            <th>Selection</th>
-            <th>Username</th>
-            <th>User Type</th>
+            <th> Selection </th>
+            <th> Name </th>
+            <th> Duration </th>
+            <th> See </th>
           </thead>
-          <tbody id="UserTable">
-          </tbody>
+            <tbody id="LibraryTable">
+                <td>
+                    <input type="checkbox" name="checkbox" value="1">
+                </td>
+                <td>
+                    Dance Dance Revolution
+                </td>
+                <td>
+                    00:05:02
+                </td>
+                <td>
+                    <button>
+                        see songs
+                    </button>
+                </td>
+            </tbody>
         </table>
       </div>
     </div>
-    <select id="operation">
-      <option value="makeUser">Make User</option>
-      <option value="makeArtist">Make Artist</option>
-      <option value="makeAdmin">Make Admin</option>
-      <option value="deleteUser">DELETE</option>
-    </select>
     <button onclick="performOperation()">go</button>
   </body>
 </html>

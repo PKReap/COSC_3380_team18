@@ -48,3 +48,6 @@
   width:5%;
 }
 
+#table-wrapper table td:last-child {
+  width:10%;
+}

@@ -16,11 +16,12 @@ function validateUser(args, callback) {
   }
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
   query(sql, (result) => {
-    const { UserID } = result.users;
+    const { UserID, UserType } = result.users;
 
     const response = {
       validation: result.length > 0,
-      userID: UserID,
+      UserID,
+      UserType,
     };
 
     callback(response);
