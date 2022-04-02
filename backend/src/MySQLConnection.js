@@ -4,8 +4,7 @@ const UserTypes = {
   Admin: 1,
   Artist: 2,
   User: 3,
-}
-
+};
 
 function validateUser(args, callback) {
   const { username, password } = args;
@@ -92,7 +91,7 @@ function makeAdmin(args, callback) {
   const { userID } = args;
   const sql = `UPDATE Users SET UserType = ${UserTypes.Admin} WHERE UserID = ${userID}`;
   query(sql, (error, result) => {
-    if (error) callback({ error: "Error updating to Admin"});
+    if (error) callback({ error: "Error updating to Admin" });
     else callback({ success: "Admin succfully updated" });
   });
 }
@@ -106,6 +105,16 @@ function deleteUser(args, callback) {
   });
 }
 
+function getAllTracks(args, callback) {
+  //  get all from the join of 3 tables Users, Tracks and Libraries
+  const sql = "SELECT Username,TrackName, Link, TrackID, TrackLength, LibraryName, TrackGenre, AverageRating, Tracks.IsDeleted FROM Users, Tracks, Libraries WHERE Users.UserID = Libraries.ArtistID AND Tracks.LibraryID = Libraries.LibraryID";
+  query(sql, (result) => {
+    const response = {
+      tracks: result.filter((track) => track.IsDeleted === 0),
+    };
+    callback(response);
+  });
+}
 module.exports = {
   validateUser,
   getAllUsers,
@@ -114,4 +123,5 @@ module.exports = {
   makeUser,
   makeAdmin,
   deleteUser,
+  getAllTracks,
 };

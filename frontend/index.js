@@ -13,7 +13,8 @@ function login(){
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     const currentlyActive = document.querySelector(".active");
-    
+    localStorage.setItem("UserId", username);
+     
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -28,10 +28,9 @@ function getAllUsers() {
           })
         );
         const columns = [
-          
           userID,
-          createElement("td", { style: "hover: true;", innerHTML: Username }),
-          createElement("td", {  style: "hover: true;", innerHTML: UserType }),
+          createElement("td", { innerHTML: Username }),
+          createElement("td", {  innerHTML: UserType }),
         ];
         columns.forEach((column) => {
           row.appendChild(column);

@@ -14,8 +14,22 @@
     <div class="topnav">
       <a class="active" href="admin.html">Admin</a>
       <a href="library.html">Artist</a>
-      <a href="playlist.html">User</a>
+      <a href="homepage.html">User</a>
     </div>
+    <!-- login -->
+    <div class="login-box">
+      <h1>Login</h1>
+      <form action="admin.html" method="post">
+        <div class="textbox">
+          <i class="fas fa-user"></i>
+          <input type="text" placeholder="Username" name="username" required>
+        </div>
+        <div class="textbox">
+          <i class="fas fa-lock"></i>
+          <input type="password" placeholder="Password" name="password" required>
+        </div>
+        <input type="submit" class="btn" value="Sign in">
+      </form>
   </body>
 
 </html>
