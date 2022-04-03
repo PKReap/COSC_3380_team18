@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="./user.js"></script>
+    <script src="./playlist.js"></script>
     <title>Document</title>
   </head>
   <body onload="getAllUsers()">
     <div class="topnav">
       <a class="active" href="index.html">Log out</a>
+      <a href="homepage.html">Homepage</a>
     </div>
     <div id="table-wrapper">
       <div id="table-scroll">
@@ -22,8 +23,6 @@
             <th> Genre </th>
             <th> Duration </th>
             <th> Rating </th>
-            <th> Average </th>
-
           </thead>
           <tbody id="TrackTable">
               <td> 
@@ -43,13 +42,11 @@
                         <option value="5"> 5 </option>
                   </select> 
                 </td>
-              <td> 4 </td>
-
           </tbody>
         </table>
       </div>
     </div>
-    <button onclick="performOperation()">go</button>
+    <button>go</button>
   </body>
 </html>
 

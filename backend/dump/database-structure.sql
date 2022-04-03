@@ -40,7 +40,7 @@ CREATE TABLE
     IF NOT EXISTS Tracks (
         PRIMARY KEY (TrackID),
         TrackID INT NOT NULL AUTO_INCREMENT,
-        TrackName VARCHAR(50) NOT NULL UNIQUE,
+        TrackName VARCHAR(50) NOT NULL,
         ArtistID INT NOT NULL,
         TrackLength TIME,
         Rating INT,
@@ -80,7 +80,8 @@ INSERT INTO Libraries (LibraryName, ArtistID) VALUES ("Electric Boogaloo", 1);
 INSERT INTO Playlists (PlaylistName, UserID) VALUES ("Playlist1", 1);
 INSERT INTO Playlists (PlaylistName, UserID) VALUES ("Playlist2", 1);
 
--- trigger to add rating to track
+
+
 
 delimiter //
 CREATE TRIGGER update_avg_insert
@@ -91,7 +92,7 @@ CREATE TRIGGER update_avg_insert
         SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = 0)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
-        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1 AND IsDeleted = 0) 
+        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating > 0 AND IsDeleted = 0) 
         WHERE TrackID = NEW.TrackID;
     END //
 
@@ -105,7 +106,7 @@ CREATE TRIGGER update_avg_update
         SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = 0)
         WHERE TrackID = NEW.TrackID;
         UPDATE Tracks
-        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating = 1 AND IsDeleted = 0) 
+        SET Rating = (SELECT COUNT(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND Rating > 0 AND IsDeleted = 0) 
         WHERE TrackID = NEW.TrackID;
     END //
 
