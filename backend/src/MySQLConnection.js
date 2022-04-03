@@ -108,7 +108,7 @@ function deleteUser(args, callback) {
 function getAllTracks(args, callback) {
   //  get all from the join of 3 tables Users, Tracks and Libraries
   const sql =
-    "SELECT Username,TrackName, Link, TrackID, TrackLength, LibraryName, TrackGenre, AverageRating, Tracks.IsDeleted FROM Users, Tracks, Libraries WHERE Users.UserID = Libraries.ArtistID AND Tracks.LibraryID = Libraries.LibraryID";
+    "SELECT Username,TrackName, Link, TrackID, LibraryName, TrackGenre, AverageRating, Tracks.IsDeleted FROM Users, Tracks, Libraries WHERE Users.UserID = Libraries.ArtistID AND Tracks.LibraryID = Libraries.LibraryID";
   query(sql, (result) => {
     const response = {
       tracks: result.filter((track) => track.IsDeleted === 0),
@@ -135,46 +135,37 @@ function createPlaylist(args, callback) {
   });
 }
 
-function insertTrackIntoPlaylist(args, callback) {
-  const { userID, playlistID, trackID } = args;
-  const sqlForSizelimit = `SELECT SizeLimit FROM Playlists WHERE PlaylistID = ${playlistID}`;
-  let sizelimit;
-  query(sqlForSizelimit, (result) => {
-    sizelimit = result[0].SizeLimit;
-    const trackCount = `SELECT COUNT(*) AS count FROM Playlists WHERE PlaylistID = ${playlistID}`;
-    query(trackCount, (result) => {
-      if (result[0].count >= sizelimit) {
-        callback({ error: "Playlist is full" });
-        return;
-      }
-      //  check if track is already in playlist
-      const sqlTrackCheck = `SELECT * FROM TrackRatings WHERE UserID = ${userID} AND TrackID = ${trackID}`;
-      query(sqlTrackCheck, (result) => {
-        if (result.length > 0) {
-          callback({ error: "Track already in playlist" });
-          return;
-        }
 
-        const trackInfo = `SELECT * FROM Tracks WHERE TrackID = ${trackID}`;
-        query(trackInfo, (result) => {
-          const {
-            TrackName,
-            ArtistID,
-            TrackLength,
-            Rating,
-            AverageRating,
-            TrackGenre,
-            Link,
-          } = result[0];
-          const sql = `INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link) VALUES ('${TrackName}', ${ArtistID}, "${TrackLength}", ${Rating}, ${AverageRating}, '${TrackGenre}', NULL, ${playlistID}, '${Link}')`;
-          query(sql, (error, result) => {
-            const defaultRating = `INSERT INTO TrackRatings (UserID, TrackID, Rating) VALUES (${userID}, ${trackID}, 0)`;
-            query(defaultRating, (error, result) => {
-              callback({ success: "Track succfully added to playlist" });
+
+function insertTrackIntoPlaylist(args, callback) {
+  const { userID, playlistName, trackIDs } = args;
+  if(trackIDs.length === 0) {
+    callback({ error: "No tracks selected" });
+    return;
+  }
+  const checkUserAlreadyHasPlaylist = `SELECT * FROM Playlists WHERE UserID = ${userID} AND PlaylistName = '${playlistName}'`;
+  query(checkUserAlreadyHasPlaylist, (result) => {
+    if (result.length > 0) {
+      callback({ error: "User already has playlist with that name" });
+      return;
+    }
+    const insertPlaylist = `INSERT INTO Playlists (UserID, PlaylistName) VALUES (${userID}, '${playlistName}')`;
+    query(insertPlaylist, (error, result) => {
+        const getHighestPlaylistID = `SELECT MAX(PlaylistID) AS PlaylistID FROM Playlists WHERE UserID = ${userID}`;
+        query(getHighestPlaylistID, (result) => {
+          const { PlaylistID } = result[0];
+          trackIDs.forEach((trackID) => {
+            const getTrackInfo = `SELECT * FROM Tracks WHERE TrackID = ${trackID}`;
+            query(getTrackInfo, (result) => {
+              const {TrackName, ArtistID, TrackGenre, Link} = result[0];
+              const insertTrack = `INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, Link, PlaylistID) VALUES ('${TrackName}', ${ArtistID}, '${TrackGenre}', '${Link}', ${PlaylistID})`;
+              query(insertTrack, (error) => {
+                if(error) callback({ error: error });
+              });
             });
           });
+          callback({ success: "Playlist succfully created" });
         });
-      });
     });
   });
 }

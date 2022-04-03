@@ -42,12 +42,11 @@ CREATE TABLE
         TrackID INT NOT NULL AUTO_INCREMENT,
         TrackName VARCHAR(50) NOT NULL,
         ArtistID INT NOT NULL,
-        TrackLength TIME,
-        Rating INT,
-        AverageRating DECIMAL(3,2),
+        Rating INT DEFAULT 0,
+        AverageRating DECIMAL(3,2) DEFAULT 0,
         TrackGenre VARCHAR(50),
-        LibraryID INT,
-        PlaylistID INT,
+        LibraryID INT DEFAULT NULL,
+        PlaylistID INT DEFAULT NULL,
         Link VARCHAR(500) NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
@@ -62,7 +61,7 @@ CREATE TABLE
         RatingID INT NOT NULL AUTO_INCREMENT,
         UserID INT NOT NULL,
         TrackID INT NOT NULL,
-        Rating INT,
+        Rating INT DEFAULT 0,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (UserID) REFERENCES Users(UserID),
         FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
@@ -136,35 +135,35 @@ delimiter ;
 
 
 --  "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09"
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link) 
-VALUES ("Moonlight Sonata", 1,  "000:05:02", 0, 0, "Classical", 1, NULL, "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link) 
+VALUES ("Moonlight Sonata", 1, "Classical", 1, "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Dubstep", 1, "000:02:04", 0, 0, "Electronic", 2, NULL, "https://www.bensound.com/bensound-music/bensound-dubstep.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Dubstep", 1, "Electronic", 2, "https://www.bensound.com/bensound-music/bensound-dubstep.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Better Days", 1, "000:02:33", 0, 0, "Contry", 1, NULL, "https://www.bensound.com/bensound-music/bensound-betterdays.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Better Days", 1, "Contry", 1,"https://www.bensound.com/bensound-music/bensound-betterdays.mp3");
  
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Funny Song", 1, "000:03:07", 0, 0, "Parody", 2, NULL, "https://www.bensound.com/bensound-music/bensound-funnysong.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Funny Song", 1, "Parody", 2,"https://www.bensound.com/bensound-music/bensound-funnysong.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Slow Motion", 1, "000:03:26", 0, 0, "Ambiance", 1, NULL, "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Slow Motion", 1, "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Adventure", 1, "000:02:59", 0, 0, "Ambiance", 1, NULL, "https://www.bensound.com/bensound-music/bensound-adventure.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Adventure", 1, "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-adventure.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Inspire", 1, "000:03:33", 0, 0, "Ambiance", 1, NULL, "https://www.bensound.com/bensound-music/bensound-inspire.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Inspire", 1, "Ambiance", 1,  "https://www.bensound.com/bensound-music/bensound-inspire.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Evolution", 1, "000:02:45", 0, 0, "Ambiance", 1, NULL, "https://www.bensound.com/bensound-music/bensound-evolution.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Evolution", 1, "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-evolution.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Piano Moment", 1, "000:01:50", 0, 0, "Classical", 1, NULL, "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Piano Moment", 1, "Classical", 1, "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3");
 
-INSERT INTO Tracks (TrackName, ArtistID, TrackLength, Rating, AverageRating, TrackGenre, LibraryID, PlaylistID, Link)
-VALUES("Dance", 1, "000:02:57", 0, 0, "Pop", 1, NULL, "https://www.bensound.com/bensound-music/bensound-dance.mp3");
+INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, LibraryID, Link)
+VALUES("Dance", 1, "Pop", 1, "https://www.bensound.com/bensound-music/bensound-dance.mp3");
 
 
 -- Add a rating to a track
