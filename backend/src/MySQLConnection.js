@@ -15,11 +15,11 @@ function validateUser(args, callback) {
   }
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
   query(sql, (result) => {
-    const { UserID, UserType } = result.users;
+    const { userName, UserType } = result.users;
 
     const response = {
       validation: result.length > 0,
-      UserID,
+      userName,
       UserType,
     };
 
@@ -70,8 +70,8 @@ function registerUser(args, callback) {
 }
 
 function makeArtist(args, callback) {
-  const { userID } = args;
-  const sql = `UPDATE Users SET UserType = ${UserTypes.Artist} WHERE UserID = ${userID}`;
+  const { userName } = args;
+  const sql = `UPDATE Users SET UserType = ${UserTypes.Artist} WHERE Username = "${userName}"`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error making user an Artist" });
     else callback({ success: "Artist succfully made" });
@@ -79,8 +79,8 @@ function makeArtist(args, callback) {
 }
 
 function makeUser(args, callback) {
-  const { userID } = args;
-  const sql = `UPDATE Users SET UserType = ${UserTypes.User} WHERE UserID = ${userID}`;
+  const { userName } = args;
+  const sql = `UPDATE Users SET UserType = ${UserTypes.User} WHERE Username = "${userName}"`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error updating to User" });
     else callback({ success: "User succfully updated" });
@@ -88,8 +88,8 @@ function makeUser(args, callback) {
 }
 
 function makeAdmin(args, callback) {
-  const { userID } = args;
-  const sql = `UPDATE Users SET UserType = ${UserTypes.Admin} WHERE UserID = ${userID}`;
+  const { userName } = args;
+  const sql = `UPDATE Users SET UserType = ${UserTypes.Admin} WHERE Username = "${userName}"`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error updating to Admin" });
     else callback({ success: "Admin succfully updated" });
@@ -97,8 +97,8 @@ function makeAdmin(args, callback) {
 }
 
 function deleteUser(args, callback) {
-  const { userID } = args;
-  const sql = `UPDATE Users SET IsDeleted = 1 WHERE UserID = ${userID}`;
+  const { userName } = args;
+  const sql = `UPDATE Users SET IsDeleted = 1 WHERE Username = ${userName}`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error deleting user" });
     else callback({ success: "User succfully deleted" });
@@ -106,29 +106,18 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  //  get all from the join of 3 tables Users, Tracks and Libraries
-  const sql =
-    "SELECT Username,TrackName, Link, TrackID, LibraryName, TrackGenre, AverageRating, Tracks.IsDeleted FROM Users, Tracks, Libraries WHERE Users.UserID = Libraries.ArtistID AND Tracks.LibraryID = Libraries.LibraryID";
+  const sql = "SELECT TrackName, TrackID , Tracks.ArtistName, TrackGenre, AverageRating, LibraryName, Link From Tracks , Libraries WHERE Tracks.LibraryID = Libraries.LibraryID AND Tracks.IsDeleted = 0";
   query(sql, (result) => {
     const response = {
-      tracks: result.filter((track) => track.IsDeleted === 0),
+      tracks: result,
     };
     callback(response);
   });
 }
 
-function updateTrackRating(args, callback) {
-  const { userID, trackID, rating } = args;
-  const sql = `UPDATE TrackRatings SET Rating = ${rating} WHERE UserID = ${userID} AND TrackID = ${trackID}`;
-  query(sql, (error, result) => {
-    if (error) callback({ error: "Error updating track rating" });
-    else callback({ success: "Track rating succfully updated" });
-  });
-}
-
 function createPlaylist(args, callback) {
-  const { userID, playlistName } = args;
-  const sql = `INSERT INTO Playlists (UserID, PlaylistName) VALUES (${userID}, '${playlistName}')`;
+  const { username, playlistName } = args;
+  const sql = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error creating playlist" });
     else callback({ success: "Playlist succfully created" });
@@ -138,27 +127,27 @@ function createPlaylist(args, callback) {
 
 
 function insertTrackIntoPlaylist(args, callback) {
-  const { userID, playlistName, trackIDs } = args;
+  const { username, playlistName, trackIDs } = args;
   if(trackIDs.length === 0) {
     callback({ error: "No tracks selected" });
     return;
   }
-  const checkUserAlreadyHasPlaylist = `SELECT * FROM Playlists WHERE UserID = ${userID} AND PlaylistName = '${playlistName}'`;
+  const checkUserAlreadyHasPlaylist = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
   query(checkUserAlreadyHasPlaylist, (result) => {
     if (result.length > 0) {
       callback({ error: "User already has playlist with that name" });
       return;
     }
-    const insertPlaylist = `INSERT INTO Playlists (UserID, PlaylistName) VALUES (${userID}, '${playlistName}')`;
+    const insertPlaylist = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
     query(insertPlaylist, (error, result) => {
-        const getHighestPlaylistID = `SELECT MAX(PlaylistID) AS PlaylistID FROM Playlists WHERE UserID = ${userID}`;
+        const getHighestPlaylistID = `SELECT MAX(PlaylistID) AS PlaylistID FROM Playlists WHERE Username = "${username}"`;
         query(getHighestPlaylistID, (result) => {
           const { PlaylistID } = result[0];
           trackIDs.forEach((trackID) => {
             const getTrackInfo = `SELECT * FROM Tracks WHERE TrackID = ${trackID}`;
             query(getTrackInfo, (result) => {
-              const {TrackName, ArtistID, TrackGenre, Link} = result[0];
-              const insertTrack = `INSERT INTO Tracks (TrackName, ArtistID, TrackGenre, Link, PlaylistID) VALUES ('${TrackName}', ${ArtistID}, '${TrackGenre}', '${Link}', ${PlaylistID})`;
+              const {TrackName, ArtistName, TrackGenre, Link} = result[0];
+              const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, PlaylistID) VALUES ('${TrackName}', "${ArtistName}", '${TrackGenre}', '${Link}', ${PlaylistID})`;
               query(insertTrack, (error) => {
                 if(error) callback({ error: error });
               });
@@ -170,6 +159,7 @@ function insertTrackIntoPlaylist(args, callback) {
   });
 }
 
+
 module.exports = {
   validateUser,
   getAllUsers,
@@ -179,7 +169,5 @@ module.exports = {
   makeAdmin,
   deleteUser,
   getAllTracks,
-  updateTrackRating,
-  createPlaylist,
   insertTrackIntoPlaylist,
 };
