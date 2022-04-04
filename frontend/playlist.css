@@ -44,23 +44,18 @@
   #table-wrapper {
     position:relative;
   }
-  #table-scroll {
-    height:1000px;
-    overflow:scroll;  
-    margin-top:0px;
-    width: 100%;
-  }
-  #table-wrapper table {
+
+  #content table {
     width:100%;
   }
   
-  #table-wrapper table * {
+  #content table * {
     border: #333 1px solid;
     color:black;
     text-align: center;
   }
-  #table-wrapper table td:first-child {
-    width:5%;
+  #content table td:first-child {
+    width:0%;
   }
   
   #table-wrapper table td:nth-child(6) {
@@ -68,5 +63,6 @@
   }
   
   #table-wrapper table td:last-child {
+    padding-right:0; 
     width: 0%;
   }

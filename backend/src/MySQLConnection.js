@@ -106,7 +106,7 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  const sql = "SELECT TrackName, TrackID , Tracks.ArtistName, TrackGenre, AverageRating, LibraryName, Link From Tracks , Libraries WHERE Tracks.LibraryID = Libraries.LibraryID AND Tracks.IsDeleted = 0";
+  const sql = "SELECT TrackName, TrackID , Tracks.ArtistName, TrackGenre, AverageRating, LibraryName, Link From Tracks , Libraries WHERE Tracks.LibraryID = Libraries.LibraryID AND Tracks.IsDeleted = 0 AND Tracks.PlaylistID IS NULL";
   query(sql, (result) => {
     const response = {
       tracks: result,

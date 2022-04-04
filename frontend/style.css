@@ -50,4 +50,5 @@
 
 #table-wrapper table td:last-child {
   width:10%;
+  padding-right: 0px;
 }

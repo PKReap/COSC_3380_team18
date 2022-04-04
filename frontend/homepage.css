@@ -51,6 +51,6 @@
 /* Get rid of the padding on the last child */
 #table-wrapper table td:last-child {
     padding-right:0; 
-    width: 20%;
+    width: 0%;
   }
   

@@ -1,4 +1,4 @@
-const host = "http://localhost:3000/api/";
+const host = "http://uhmusic.xyz/api/";
 
 function createElement(tag, params) {
   const element = document.createElement(tag);
@@ -46,7 +46,6 @@ function createTableHeaders() {
 }
 
 function getAllLibraries() {
-    
   $.ajax({
     url: `${host}userGetAllPlaylists`,
     type: "POST",
@@ -54,15 +53,55 @@ function getAllLibraries() {
     success: (data) => {
       const { playlists } = data;
       playlists.forEach((playlist) => {
-          const button = createElement("button", {
-            innerHTML: playlist.PlaylistName,
-            className: "collapsible",
-          });
-            const div = createElement("div", {
-                className: "content",
+        const button = createElement("button", {
+          innerHTML: playlist.PlaylistName,
+          className: "collapsible",
+        });
+        const div = createElement("div", {
+          className: "content",
+          id: "table-wrapper",
+        });
+        $.ajax({
+          url: `${host}getAllTracksForPlaylist`,
+          type: "POST",
+          data: JSON.stringify({ playlistID: playlist.PlaylistID }),
+          success: (data) => {
+            const { tracks } = data;
+            const table = createTableHeaders();
+            const tbody = createElement("tbody", {});
+            tracks.forEach((track) => {
+              const {TrackID, TrackName, ArtistName, LibraryName, TrackGenre, Link, Rating} = track;
+              const tr = createElement("tr", {});
+              const checkbox = createElement("input", {
+                type: "checkbox",
+                value: TrackID,
+              });
+              const audio = createElement("audio", {
+                controls: true,
+                src: Link,
+              });
+
+              const columns = [
+                checkbox,
+                createElement("td", { innerHTML: TrackName }),
+                createElement("td", { innerHTML: LibraryName }),
+                createElement("td", { innerHTML: ArtistName }),
+                createElement("td", { innerHTML: TrackGenre }),
+                createElement("td", { innerHTML: Rating }),
+                audio,
+              ];
+              columns.forEach((column) => {
+                tr.appendChild(column);
+              }
+              );  
+              tbody.appendChild(tr);
             });
-            document.body.appendChild(button);
-            document.body.appendChild(div);
+            table.appendChild(tbody);
+            div.appendChild(table);
+          },
+        });
+        document.body.appendChild(button);
+        document.body.appendChild(div);
       });
     },
     error: (err) => {
