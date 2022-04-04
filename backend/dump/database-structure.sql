@@ -75,9 +75,6 @@ INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Dance Dance Revolution", "Arist1");
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Electric Boogaloo", "Arist1");
 
-INSERT INTO Playlists (PlaylistName, Username) VALUES ("Playlist1", "User1");
-INSERT INTO Playlists (PlaylistName, Username) VALUES ("Playlist2", "User1");
-
 -- create trigger to calculate average rating
 delimiter //
 CREATE TRIGGER calc_avg_rating 
@@ -89,9 +86,6 @@ CREATE TRIGGER calc_avg_rating
         WHERE TrackID = NEW.TrackID;
     END; //
 delimiter ;
-
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link) 
-VALUES ("Moonlight Sonata", "Artist1", "Classical", 1, "https://www.proudmusiclibrary.com/en/file/preview_download/?did=SGVXSGR1aVN5QXhCQUdlWGtUVldMQT09");
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
 VALUES("Dubstep", "Artist1", "Electronic", 2, "https://www.bensound.com/bensound-music/bensound-dubstep.mp3");
@@ -121,6 +115,5 @@ INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
 VALUES("Dance", "Artist1", "Pop", 1, "https://www.bensound.com/bensound-music/bensound-dance.mp3");
 
 
-INSERT INTO TrackRatings (Username, ArtistName, TrackName, Rating, TrackID) VALUES ("User1", "Artist1", "Moonlight Sonata", 5, 1);
 
-SELECT * from Tracks
+SELECT * from Playlists;

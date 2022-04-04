@@ -146,8 +146,8 @@ function insertTrackIntoPlaylist(args, callback) {
           trackIDs.forEach((trackID) => {
             const getTrackInfo = `SELECT * FROM Tracks WHERE TrackID = ${trackID}`;
             query(getTrackInfo, (result) => {
-              const {TrackName, ArtistName, TrackGenre, Link} = result[0];
-              const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, PlaylistID) VALUES ('${TrackName}', "${ArtistName}", '${TrackGenre}', '${Link}', ${PlaylistID})`;
+              const {TrackName, ArtistName, TrackGenre, Link, LibraryID} = result[0];
+              const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, PlaylistID, LibraryID) VALUES ('${TrackName}', "${ArtistName}", '${TrackGenre}', '${Link}', ${PlaylistID} , ${LibraryID})`;
               query(insertTrack, (error) => {
                 if(error) callback({ error: error });
               });
@@ -170,6 +170,19 @@ function userGetAllPlaylists(args, callback) {
   });
 }
 
+function getAllTracksForPlaylist(args, callback) {
+  const { playlistID } = args;
+  const sql = `SELECT TrackID, TrackName, Tracks.ArtistName, LibraryName, TrackGenre, Link, Rating From Tracks, Libraries WHERE Tracks.LibraryID = Libraries.LibraryID AND PlaylistID = ${playlistID} AND Tracks.IsDeleted = 0`;
+  query(sql, (result) => {
+    const response = {
+      tracks: result,
+    };
+    callback(response);
+  });
+}
+
+
+
 
 module.exports = {
   validateUser,
@@ -181,5 +194,6 @@ module.exports = {
   deleteUser,
   getAllTracks,
   insertTrackIntoPlaylist,
-  userGetAllPlaylists
+  userGetAllPlaylists,
+  getAllTracksForPlaylist
 };
