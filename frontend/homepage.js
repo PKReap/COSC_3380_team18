@@ -1,4 +1,4 @@
-const host = "http://uhmusic.xyz/api/";
+const host = "http://localhost:3000/api/";
 
 function createElement(tag, params) {
   const element = document.createElement(tag);
@@ -17,14 +17,14 @@ function getAllTracks() {
     data: JSON.stringify({}),
     success: (data) => {
       const { tracks } = data;
+      console.log(tracks);
       tracks.forEach((track) => {
         const {
           TrackID,
           TrackName,
-          Username,
+          ArtistName,
           LibraryName,
           TrackGenre,
-          TrackLength,
           AverageRating,
           Link,
         } = track;
@@ -48,7 +48,7 @@ function getAllTracks() {
           trackID,
           createElement("td", { innerHTML: TrackName }),
           createElement("td", { innerHTML: LibraryName }),
-          createElement("td", { innerHTML: Username }),
+          createElement("td", { innerHTML: ArtistName }),
           createElement("td", { innerHTML: TrackGenre }),
           createElement("td", { innerHTML: AverageRating }),
           audiotd,
@@ -71,12 +71,12 @@ playlistbutton.addEventListener("click", () => {
   const tracksTable = document.getElementById("TracksTable");
   const selectedTracks = tracksTable.querySelectorAll("input:checked");
   const playlistName = document.getElementById("playlist-name").value;
-  const userID = 2;
+  const username = "User1";
   $.ajax({
     url: `${host}insertTrackIntoPlaylist`,
     type: "POST",
     data: JSON.stringify({
-      userID,
+      username,
       playlistName,
       trackIDs: Array.from(selectedTracks).map((track) => parseInt(track.value)),
     }),

@@ -159,6 +159,17 @@ function insertTrackIntoPlaylist(args, callback) {
   });
 }
 
+function userGetAllPlaylists(args, callback) {
+  const { username } = args;
+  const sql = `SELECT * FROM Playlists WHERE Username = "${username}"`;
+  query(sql, (result) => {
+    const response = {
+      playlists: result,
+    };
+    callback(response);
+  });
+}
+
 
 module.exports = {
   validateUser,
@@ -170,4 +181,5 @@ module.exports = {
   deleteUser,
   getAllTracks,
   insertTrackIntoPlaylist,
+  userGetAllPlaylists
 };

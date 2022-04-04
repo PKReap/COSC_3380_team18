@@ -1,4 +1,4 @@
-const host = "http://uhmusic.xyz/api/";
+const host = "http://localhost:3000/api/";
 
 function createElement(tag, params) {
   const element = document.createElement(tag);
@@ -18,13 +18,13 @@ function getAllUsers() {
     success: (data) => {
       const { users } = data;
       users.forEach((user) => {
-        const { Username, UserID, UserType } = user;
+        const { Username, UserType } = user;
         const row = createElement("tr", {});
         const userID = createElement("td", {});
         userID.appendChild(
           createElement("input", {
             type: "checkbox",
-            value: UserID,
+            value: Username,
           })
         );
         const columns = [
@@ -50,11 +50,13 @@ function performOperation() {
   const selected = [].filter.call(checkboxes, (checkbox) => checkbox.checked);
   const values = selected.map((checkbox) => checkbox.value);
   const operation = document.getElementById("operation").value;
+  
   values.forEach((value) => {
+    
     $.ajax({
       url: host + operation,
       type: "POST",
-      data: JSON.stringify({ userID: parseFloat(value) }),
+      data: JSON.stringify({ userName: value }),
       success: (data) => {
         window.location.reload();
       },
