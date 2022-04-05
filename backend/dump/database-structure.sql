@@ -45,8 +45,7 @@ CREATE TABLE
         AverageRating DECIMAL(3,2) DEFAULT 0,
         TrackGenre VARCHAR(50),
         Link VARCHAR(500) NOT NULL,
-        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
-        FOREIGN KEY (ArtistName) REFERENCES Users(Username)
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE
     );
 
 CREATE TABLE
@@ -54,9 +53,7 @@ CREATE TABLE
         PRIMARY KEY (PTID),
         PTID INT NOT NULL AUTO_INCREMENT,
         PlaylistID INT NOT NULL,
-        TrackID INT NOT NULL,
-        FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
-        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
+        TrackID INT NOT NULL
     );
 
 CREATE TABLE
@@ -64,9 +61,7 @@ CREATE TABLE
         PRIMARY KEY (LTID),
         LTID INT NOT NULL AUTO_INCREMENT,
         LibraryID INT NOT NULL,
-        TrackID INT NOT NULL,
-        FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
-        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
+        TrackID INT NOT NULL
     );
 
 CREATE TABLE 
@@ -83,12 +78,10 @@ INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Arist1", "Password
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("User1", "Password123", "User");
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password123", "Admin");
 
--- Artist1 makes a library named "Dance Dance Revolution"
 
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Dance Dance Revolution", "Arist1");
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Electric Boogaloo", "Arist1");
 
--- create trigger to calculate average rating
 delimiter //
 CREATE TRIGGER calc_avg_rating 
     AFTER INSERT ON TrackRatings
