@@ -10,16 +10,19 @@ const server = http.createServer((req, res) => {
   };
   const path = req.url.slice(5);
   console.log(path);
-
-  
   const responseHandler = paths[path]; //  here it geting the function
-
+  
   if (responseHandler) {
     res.writeHead(200, headers);
+    const chuncks = [];
     req.on("data", (data) => {
-      const args = JSON.parse(data);
-      responseHandler(args, (result) => {
-        res.end(JSON.stringify(result));
+      chuncks.push(data);
+    });
+    req.on("end", () => {
+      const body = Buffer.concat(chuncks).toString();
+      const args = JSON.parse(body);
+      responseHandler(args, (response) => {
+        res.end(JSON.stringify(response));
       });
     });
   } else {

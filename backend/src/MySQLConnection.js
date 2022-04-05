@@ -182,7 +182,23 @@ function getAllTracksForPlaylist(args, callback) {
 }
 
 
+function upload(args, callback) {
+  const { b64, name } = args;
+  const fs = require("fs");
+  // write the mp3 file to the server
+  // decode the base64 string, remove header information, and write to file
+  const decoded = Buffer.from(b64, "base64");
 
+  
+  fs.writeFile(name, decoded, (err) => {
+    if (err) {
+      callback({ error: "Error uploading sound" });
+      return;
+    }
+    callback({ success: "Sound succfully uploaded" });
+  });
+
+}
 
 module.exports = {
   validateUser,
@@ -195,5 +211,7 @@ module.exports = {
   getAllTracks,
   insertTrackIntoPlaylist,
   userGetAllPlaylists,
-  getAllTracksForPlaylist
+  getAllTracksForPlaylist,
+  createPlaylist,
+  upload
 };

@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.1",
     "connect": "^3.7.0",
+    "fs": "^0.0.1-security",
     "mysql": "^2.18.1"
   },
   "devDependencies": {
