@@ -53,7 +53,8 @@ CREATE TABLE
         PRIMARY KEY (PTID),
         PTID INT NOT NULL AUTO_INCREMENT,
         PlaylistID INT NOT NULL,
-        TrackID INT NOT NULL
+        TrackID INT NOT NULL,
+         FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
 
 CREATE TABLE
@@ -61,7 +62,8 @@ CREATE TABLE
         PRIMARY KEY (LTID),
         LTID INT NOT NULL AUTO_INCREMENT,
         LibraryID INT NOT NULL,
-        TrackID INT NOT NULL
+        TrackID INT NOT NULL,
+		FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
 
 CREATE TABLE 
@@ -119,10 +121,6 @@ VALUES("Piano Moment", "Artist1", "Classical",  "https://www.bensound.com/bensou
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Dance", "Artist1", "Pop", "https://www.bensound.com/bensound-music/bensound-dance.mp3", "Electric Boogaloo");
-
-
-
-
 
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 1);
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 2);
