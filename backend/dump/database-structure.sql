@@ -41,29 +41,42 @@ CREATE TABLE
         TrackID INT NOT NULL AUTO_INCREMENT,
         TrackName VARCHAR(200) NOT NULL,
         ArtistName VARCHAR(50) NOT NULL,
-        Rating INT DEFAULT 0,
+        LibraryName VARCHAR(200) NOT NULL,
         AverageRating DECIMAL(3,2) DEFAULT 0,
         TrackGenre VARCHAR(50),
-        LibraryID INT DEFAULT NULL,
-        PlaylistID INT DEFAULT NULL,
         Link VARCHAR(500) NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
+        FOREIGN KEY (ArtistName) REFERENCES Users(Username)
+    );
+
+CREATE TABLE
+    IF NOT EXISTS Playlist_Tracks (
+        PRIMARY KEY (PTID),
+        PTID INT NOT NULL AUTO_INCREMENT,
+        PlaylistID INT NOT NULL,
+        TrackID INT NOT NULL,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
-        FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID)
+        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
+    );
+
+CREATE TABLE
+    IF NOT EXISTS Library_Tracks (
+        PRIMARY KEY (LTID),
+        LTID INT NOT NULL AUTO_INCREMENT,
+        LibraryID INT NOT NULL,
+        TrackID INT NOT NULL,
+        FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
+        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
 
 CREATE TABLE 
     IF NOT EXISTS TrackRatings (
         PRIMARY KEY (RatingID),
         RatingID INT NOT NULL AUTO_INCREMENT,
-        Username  VARCHAR(50)  NOT NULL,
-        ArtistName VARCHAR(50) NOT NULL,
         TrackID INT NOT NULL,
-        TrackName VARCHAR(200) NOT NULL,
         Rating INT DEFAULT 0,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
-        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID),
-        FOREIGN KEY (Username) REFERENCES Users(Username)
+        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
 
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Arist1", "Password123", "Arist");
@@ -87,33 +100,43 @@ CREATE TRIGGER calc_avg_rating
     END; //
 delimiter ;
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Dubstep", "Artist1", "Electronic", 2, "https://www.bensound.com/bensound-music/bensound-dubstep.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Dubstep", "Artist1", "Electronic", "https://www.bensound.com/bensound-music/bensound-dubstep.mp3", "Dance Dance Revolution");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Better Days", "Artist1", "Contry", 1,"https://www.bensound.com/bensound-music/bensound-betterdays.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Better Days", "Artist1", "Contry","https://www.bensound.com/bensound-music/bensound-betterdays.mp3", "Electric Boogaloo");
  
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Funny Song", "Artist1", "Parody", 2,"https://www.bensound.com/bensound-music/bensound-funnysong.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Funny Song", "Artist1", "Parody","https://www.bensound.com/bensound-music/bensound-funnysong.mp3", "Electric Boogaloo");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Slow Motion", "Artist1", "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Slow Motion", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3", "Electric Boogaloo");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Adventure", "Artist1", "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-adventure.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Adventure", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-adventure.mp3", "Dance Dance Revolution");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Inspire", "Artist1", "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-inspire.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Inspire", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-inspire.mp3", "Dance Dance Revolution");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Evolution", "Artist1", "Ambiance", 1, "https://www.bensound.com/bensound-music/bensound-evolution.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Evolution", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-evolution.mp3", "Dance Dance Revolution");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Piano Moment", "Artist1", "Classical", 1,  "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Piano Moment", "Artist1", "Classical",  "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3", "Electric Boogaloo");
 
-INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, LibraryID, Link)
-VALUES("Dance", "Artist1", "Pop", 1, "https://www.bensound.com/bensound-music/bensound-dance.mp3");
+INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
+VALUES("Dance", "Artist1", "Pop", "https://www.bensound.com/bensound-music/bensound-dance.mp3", "Electric Boogaloo");
 
 
 
-SELECT * from Playlists;
+
+
+INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 1);
+INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 2);
+INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 3);
+
+-- select all tracks from playlist 1 by joining the tables Playlist_Tracks and Tracks and Playlists
+SELECT * FROM 
+    Tracks JOIN
+    Playlist_Tracks ON Tracks.TrackID = Playlist_Tracks.TrackID 
+WHERE Playlist_Tracks.PlaylistID = 1;

@@ -13,19 +13,7 @@ const server = http.createServer((req, res) => {
 
   
   const responseHandler = paths[path]; //  here it geting the function
-  if(path === "upload"){ // just for uploading
-    req.writeHead(200, {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST",
-      "Access-Control-Max-Age": 0, 
-      "Content-Type": "richtext/html",
-    });
-    req.on("data", (data) => {
-      const args = JSON.parse(data);
-      responseHandler(args, res);
-    })   
-    return; 
-  }
+
   if (responseHandler) {
     res.writeHead(200, headers);
     req.on("data", (data) => {
