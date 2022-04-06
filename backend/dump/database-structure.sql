@@ -76,7 +76,9 @@ CREATE TABLE
         TrackID INT NOT NULL,
         Rating INT DEFAULT 0,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
-        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
+        Username VARCHAR(50) NOT NULL,
+        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID),
+        FOREIGN KEY (Username) REFERENCES Users(Username)
     );
 
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Arist1", "Password123", "Arist");
@@ -144,19 +146,25 @@ VALUES("Dance", "Artist1", "Pop", "https://www.bensound.com/bensound-music/benso
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 9);
 
 INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist1", "User1");
+INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist2", "User1");
 
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 1);
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 2);
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 3);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 1, 5);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 2, 5);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 3, 5);
+-- create a view with tracks and playlist ID with the user's rating
+CREATE VIEW Playlist_Tracks_View AS
+    SELECT Playlist_Tracks.PlaylistID, Playlist_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName
+    FROM Playlist_Tracks
+    INNER JOIN Tracks ON Playlist_Tracks.TrackID = Tracks.TrackID;
+    
+CREATE VIEW Library_Tracks_View AS
+    SELECT Library_Tracks.LibraryID, Library_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName
+    FROM Library_Tracks
+    INNER JOIN Tracks ON Library_Tracks.TrackID = Tracks.TrackID;
 
--- select all tracks from playlist 1 by joining the tables Playlist_Tracks and Tracks and Playlists
-SELECT * FROM 
-    Tracks JOIN
-    Playlist_Tracks ON Tracks.TrackID = Playlist_Tracks.TrackID 
-WHERE Playlist_Tracks.PlaylistID = 1;
 
--- select all tracks from all the libraries by joining the tables Library_Tracks and Tracks
-SELECT * FROM 
-    Tracks JOIN
-    Library_Tracks ON Tracks.TrackID = Library_Tracks.TrackID;
-
+-- joio Playlist_Tracks_View with rating views with only those rated by user1
+SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = "User1" AND PlaylistID = ;

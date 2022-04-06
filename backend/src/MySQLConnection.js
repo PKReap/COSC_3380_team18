@@ -106,7 +106,7 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  const sql = "SELECT * FROM Tracks JOIN Library_Tracks ON Tracks.TrackID = Library_Tracks.TrackID";
+  const sql = "SELECT * FROM Library_Tracks_View";
   query(sql, (result) => {
     const response = {
       tracks: result,
@@ -146,8 +146,11 @@ function insertTrackIntoPlaylist(args, callback) {
           trackIDs.forEach((trackID) => {
             const insertTrackIntoPlaylist = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${PlaylistID}, ${trackID})`;
             query(insertTrackIntoPlaylist, (error, result) => {
-              if (error) callback({ error: "Error adding track to playlist" });
-              else callback({ success: "Track succfully added to playlist" });
+              const insertRating = `INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ('${username}', ${trackID}, 0)`;
+              query(insertRating, (error, result) => {
+                if (error) callback({ error: "Error inserting track into playlist" });
+                else callback({ success: "Track succfully inserted into playlist" });
+              });
             });
           });
           callback({ success: "Playlist succfully created" });
@@ -172,8 +175,8 @@ function userGetAllPlaylists(args, callback) {
 }
 
 function getAllTracksForPlaylist(args, callback) {
-  const { playlistID } = args;
-  const sql = `SELECT * FROM Playlist_Tracks JOIN Tracks ON Playlist_Tracks.TrackID = Tracks.TrackID WHERE PlaylistID = ${playlistID}`;
+  const { playlistID , username} = args;
+  const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID}`;
   query(sql, (result) => {
     const response = {
       tracks: result,

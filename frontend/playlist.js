@@ -64,7 +64,7 @@ function getAllLibraries() {
         $.ajax({
           url: `${host}getAllTracksForPlaylist`,
           type: "POST",
-          data: JSON.stringify({ playlistID: playlist.PlaylistID }),
+          data: JSON.stringify({ playlistID: playlist.PlaylistID, username: "User1" }),
           success: (data) => {
             const { tracks } = data;
             const table = createTableHeaders();
