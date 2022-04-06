@@ -9,6 +9,7 @@ CREATE TABLE
         UserPassword VARCHAR(50) NOT NULL,
         UserType ENUM("Admin", "Arist", "User") NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
+	Level NOT NULL INT DEFAULT 0,
         PRIMARY KEY (Username)
     );
 
