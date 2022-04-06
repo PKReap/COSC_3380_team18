@@ -106,7 +106,7 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  const sql = "SELECT TrackName, TrackID , Tracks.ArtistName, TrackGenre, AverageRating, LibraryName, Link From Tracks , Libraries WHERE Tracks.LibraryID = Libraries.LibraryID AND Tracks.IsDeleted = 0 AND Tracks.PlaylistID IS NULL";
+  const sql = "SELECT * FROM Tracks JOIN Library_Tracks ON Tracks.TrackID = Library_Tracks.TrackID";
   query(sql, (result) => {
     const response = {
       tracks: result,
@@ -144,13 +144,10 @@ function insertTrackIntoPlaylist(args, callback) {
         query(getHighestPlaylistID, (result) => {
           const { PlaylistID } = result[0];
           trackIDs.forEach((trackID) => {
-            const getTrackInfo = `SELECT * FROM Tracks WHERE TrackID = ${trackID}`;
-            query(getTrackInfo, (result) => {
-              const {TrackName, ArtistName, TrackGenre, Link, LibraryID} = result[0];
-              const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, PlaylistID, LibraryID) VALUES ('${TrackName}', "${ArtistName}", '${TrackGenre}', '${Link}', ${PlaylistID} , ${LibraryID})`;
-              query(insertTrack, (error) => {
-                if(error) callback({ error: error });
-              });
+            const insertTrackIntoPlaylist = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${PlaylistID}, ${trackID})`;
+            query(insertTrackIntoPlaylist, (error, result) => {
+              if (error) callback({ error: "Error adding track to playlist" });
+              else callback({ success: "Track succfully added to playlist" });
             });
           });
           callback({ success: "Playlist succfully created" });
@@ -161,18 +158,22 @@ function insertTrackIntoPlaylist(args, callback) {
 
 function userGetAllPlaylists(args, callback) {
   const { username } = args;
-  const sql = `SELECT * FROM Playlists WHERE Username = "${username}"`;
-  query(sql, (result) => {
-    const response = {
-      playlists: result,
-    };
-    callback(response);
+  const getAllPlaylistIDs = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}"`;
+  query(getAllPlaylistIDs, (result) => {
+    
+    const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}"`;
+    query(getAllUsersTracks, (result) => {
+      const response = {
+        playlists: result,
+      };
+      callback(response);
+    }); 
   });
 }
 
 function getAllTracksForPlaylist(args, callback) {
   const { playlistID } = args;
-  const sql = `SELECT TrackID, TrackName, Tracks.ArtistName, LibraryName, TrackGenre, Link, Rating From Tracks, Libraries WHERE Tracks.LibraryID = Libraries.LibraryID AND PlaylistID = ${playlistID} AND Tracks.IsDeleted = 0`;
+  const sql = `SELECT * FROM Playlist_Tracks JOIN Tracks ON Playlist_Tracks.TrackID = Tracks.TrackID WHERE PlaylistID = ${playlistID}`;
   query(sql, (result) => {
     const response = {
       tracks: result,

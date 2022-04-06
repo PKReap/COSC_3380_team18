@@ -11,7 +11,17 @@ const server = http.createServer((req, res) => {
   const path = req.url.slice(5);
   console.log(path);
   const responseHandler = paths[path]; //  here it geting the function
-  
+  /*
+    if (responseHandler) {
+    res.writeHead(200, headers);
+    req.on("data", (data) => {
+      const args = JSON.parse(data);
+      responseHandler(args, (result) => {
+        res.end(JSON.stringify(result));
+      });
+    });
+
+  */
   if (responseHandler) {
     res.writeHead(200, headers);
     const chuncks = [];

@@ -9,7 +9,7 @@ CREATE TABLE
         UserPassword VARCHAR(50) NOT NULL,
         UserType ENUM("Admin", "Arist", "User") NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
-	Level NOT NULL INT DEFAULT 0,
+	    UserLevel INT NOT NULL DEFAULT 0,
         PRIMARY KEY (Username)
     );
 
@@ -55,7 +55,8 @@ CREATE TABLE
         PTID INT NOT NULL AUTO_INCREMENT,
         PlaylistID INT NOT NULL,
         TrackID INT NOT NULL,
-         FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
+        FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
+        FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
 
 CREATE TABLE
@@ -64,6 +65,7 @@ CREATE TABLE
         LTID INT NOT NULL AUTO_INCREMENT,
         LibraryID INT NOT NULL,
         TrackID INT NOT NULL,
+        FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
 		FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
 
@@ -98,30 +100,50 @@ delimiter ;
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Dubstep", "Artist1", "Electronic", "https://www.bensound.com/bensound-music/bensound-dubstep.mp3", "Dance Dance Revolution");
+-- Insert dubstep into Dance Dance Revolution
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 1);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Better Days", "Artist1", "Contry","https://www.bensound.com/bensound-music/bensound-betterdays.mp3", "Electric Boogaloo");
+-- Insert Better Days into Electric Boogaloo
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 2);
  
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Funny Song", "Artist1", "Parody","https://www.bensound.com/bensound-music/bensound-funnysong.mp3", "Electric Boogaloo");
+-- Insert Funny Song into Electric Boogaloo
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 3);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Slow Motion", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3", "Electric Boogaloo");
+-- Insert Slow Motion into Electric Boogaloo
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 4);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Adventure", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-adventure.mp3", "Dance Dance Revolution");
+-- Insert Adventure into Dance Dance Revolution
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 5);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Inspire", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-inspire.mp3", "Dance Dance Revolution");
+-- Insert Inspire into Dance Dance Revolution
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 6);  
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Evolution", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-evolution.mp3", "Dance Dance Revolution");
+-- Insert Evolution into Dance Dance Revolution
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 7);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Piano Moment", "Artist1", "Classical",  "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3", "Electric Boogaloo");
+-- Insert Piano Moment into Electric Boogaloo
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 8);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName) 
 VALUES("Dance", "Artist1", "Pop", "https://www.bensound.com/bensound-music/bensound-dance.mp3", "Electric Boogaloo");
+-- Insert Dance into Electric Boogaloo
+INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 9);
+
+INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist1", "User1");
 
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 1);
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 2);
@@ -132,3 +154,9 @@ SELECT * FROM
     Tracks JOIN
     Playlist_Tracks ON Tracks.TrackID = Playlist_Tracks.TrackID 
 WHERE Playlist_Tracks.PlaylistID = 1;
+
+-- select all tracks from all the libraries by joining the tables Library_Tracks and Tracks
+SELECT * FROM 
+    Tracks JOIN
+    Library_Tracks ON Tracks.TrackID = Library_Tracks.TrackID;
+

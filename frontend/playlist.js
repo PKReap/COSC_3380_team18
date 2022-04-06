@@ -1,5 +1,4 @@
-const host = "http://uhmusic.xyz/api/";
-
+const host = "http://localhost:3000/api/";
 function createElement(tag, params) {
   const element = document.createElement(tag);
   const keys = Object.keys(params);
@@ -52,6 +51,7 @@ function getAllLibraries() {
     data: JSON.stringify({ username: "User1" }),
     success: (data) => {
       const { playlists } = data;
+      console.log(playlists);
       playlists.forEach((playlist) => {
         const button = createElement("button", {
           innerHTML: playlist.PlaylistName,
