@@ -124,11 +124,9 @@ function createPlaylist(args, callback) {
   });
 }
 
-
-
 function insertTrackIntoPlaylist(args, callback) {
   const { username, playlistName, trackIDs } = args;
-  if(trackIDs.length === 0) {
+  if (trackIDs.length === 0) {
     callback({ error: "No tracks selected" });
     return;
   }
@@ -140,21 +138,27 @@ function insertTrackIntoPlaylist(args, callback) {
     }
     const insertPlaylist = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
     query(insertPlaylist, (error, result) => {
-        const getHighestPlaylistID = `SELECT MAX(PlaylistID) AS PlaylistID FROM Playlists WHERE Username = "${username}"`;
-        query(getHighestPlaylistID, (result) => {
-          const { PlaylistID } = result[0];
-          trackIDs.forEach((trackID) => {
-            const insertTrackIntoPlaylist = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${PlaylistID}, ${trackID})`;
-            query(insertTrackIntoPlaylist, (error, result) => {
-              const insertRating = `INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ('${username}', ${trackID}, 0)`;
-              query(insertRating, (error, result) => {
-                if (error) callback({ error: "Error inserting track into playlist" });
-                else callback({ success: "Track succfully inserted into playlist" });
-              });
+      const getHighestPlaylistID = `SELECT MAX(PlaylistID) AS PlaylistID FROM Playlists WHERE Username = "${username}"`;
+      query(getHighestPlaylistID, (result) => {
+        const { PlaylistID } = result[0];
+        trackIDs.forEach((trackID) => {
+          const insertTrackIntoPlaylist = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${PlaylistID}, ${trackID})`;
+          query(insertTrackIntoPlaylist, (error, result) => {
+            const checkIfRatingExists = `SELECT * FROM TrackRatings WHERE TrackID = ${trackID} AND Username = "${username}"`;
+            query(checkIfRatingExists, (result) => {
+              if (result.length > 0) {
+                callback({ success: "Playlist succfully created" });
+              } else {
+                const insertRating = `INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("${username}", ${trackID}, 0)`;
+                query(insertRating, (error, result) => {
+                  callback({ success: "Playlist succfully created" });
+                });
+              }
             });
           });
-          callback({ success: "Playlist succfully created" });
         });
+        callback({ success: "Playlist succfully created" });
+      });
     });
   });
 }
@@ -163,19 +167,18 @@ function userGetAllPlaylists(args, callback) {
   const { username } = args;
   const getAllPlaylistIDs = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}"`;
   query(getAllPlaylistIDs, (result) => {
-    
     const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}"`;
     query(getAllUsersTracks, (result) => {
       const response = {
         playlists: result,
       };
       callback(response);
-    }); 
+    });
   });
 }
 
 function getAllTracksForPlaylist(args, callback) {
-  const { playlistID , username} = args;
+  const { playlistID, username } = args;
   const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID}`;
   query(sql, (result) => {
     const response = {
@@ -185,7 +188,6 @@ function getAllTracksForPlaylist(args, callback) {
   });
 }
 
-
 function upload(args, callback) {
   const { b64, name } = args;
   const fs = require("fs");
@@ -193,7 +195,6 @@ function upload(args, callback) {
   // decode the base64 string, remove header information, and write to file
   const decoded = Buffer.from(b64, "base64");
 
-  
   fs.writeFile(name, decoded, (err) => {
     if (err) {
       callback({ error: "Error uploading sound" });
@@ -201,7 +202,6 @@ function upload(args, callback) {
     }
     callback({ success: "Sound succfully uploaded" });
   });
-
 }
 
 module.exports = {
@@ -217,5 +217,5 @@ module.exports = {
   userGetAllPlaylists,
   getAllTracksForPlaylist,
   createPlaylist,
-  upload
+  upload,
 };
