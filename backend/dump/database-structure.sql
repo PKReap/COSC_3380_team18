@@ -10,6 +10,7 @@ CREATE TABLE
         UserType ENUM("Admin", "Arist", "User") NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
 	    UserLevel INT NOT NULL DEFAULT 0,
+        PlaylistLimit INT NOT NULL DEFAULT 5,
         PRIMARY KEY (Username)
     );
 
@@ -146,14 +147,15 @@ VALUES("Dance", "Artist1", "Pop", "https://www.bensound.com/bensound-music/benso
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 9);
 
 INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist1", "User1");
-INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist2", "User1");
 
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 1);
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 2);
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 3);
-INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 1, 5);
-INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 2, 5);
-INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 3, 5);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 1, 0);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 2, 0);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 3, 0);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 4, 0);
+INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 5, 0);
 -- create a view with tracks and playlist ID with the user's rating
 CREATE VIEW Playlist_Tracks_View AS
     SELECT Playlist_Tracks.PlaylistID, Playlist_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName
@@ -161,10 +163,26 @@ CREATE VIEW Playlist_Tracks_View AS
     INNER JOIN Tracks ON Playlist_Tracks.TrackID = Tracks.TrackID;
     
 CREATE VIEW Library_Tracks_View AS
-    SELECT Library_Tracks.LibraryID, Library_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName
+    SELECT Library_Tracks.LibraryID, Library_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName, Tracks.AverageRating
     FROM Library_Tracks
     INNER JOIN Tracks ON Library_Tracks.TrackID = Tracks.TrackID;
 
+delimiter //
+CREATE TRIGGER on_rating_change
+    AFTER UPDATE ON TrackRatings
+    FOR EACH ROW
+    BEGIN
+    UPDATE Users
+        SET PlaylistLimit = 5 + FLOOR((SELECT COUNT(Username) FROM TrackRatings WHERE Username = NEW.Username AND Rating > 0) / 5)
+        WHERE Username = NEW.Username;
+    END; //
+delimiter ;
 
--- joio Playlist_Tracks_View with rating views with only those rated by user1
-SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = "User1" AND PlaylistID = 1;
+-- user1 likes track 1
+UPDATE TrackRatings SET Rating = 5 WHERE Username = "User1" AND TrackID = 1;
+UPDATE TrackRatings SET Rating = 5 WHERE Username = "User1" AND TrackID = 2;
+UPDATE TrackRatings SET Rating = 5 WHERE Username = "User1" AND TrackID = 3;
+UPDATE TrackRatings SET Rating = 5 WHERE Username = "User1" AND TrackID = 4;
+UPDATE TrackRatings SET Rating = 5 WHERE Username = "User1" AND TrackID = 5;
+
+SELECT * FROM Users WHERE Username = "User1";
