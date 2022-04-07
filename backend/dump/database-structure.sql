@@ -167,4 +167,4 @@ CREATE VIEW Library_Tracks_View AS
 
 
 -- joio Playlist_Tracks_View with rating views with only those rated by user1
-SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = "User1" AND PlaylistID = ;
+SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = "User1" AND PlaylistID = 1;

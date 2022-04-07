@@ -1,4 +1,4 @@
-const host = "http://localhost:3000/api/";
+const host = "http://uhmusic.xyz/api/";
 function createElement(tag, params) {
   const element = document.createElement(tag);
   const keys = Object.keys(params);
