@@ -55,7 +55,13 @@
 
           <ul class="menu-links">
             <li class="">
-              <a href="../../old/playlist.html">
+              <button id="modal-playlist-btn">
+                  <i class='bx bx-list-plus icon'></i>
+                  <span class="text nav-text">Create Playlist</span>
+              </button>
+          </li>
+            <li class="">
+              <a href="./playlist.html">
                 <button id="modal-my-playlist-btn">
                   <i class="bx bxs-playlist icon"></i>
                   <span class="text nav-text">My Playlist</span>
@@ -161,6 +167,21 @@
         </div>
       </div>
     </div>
+
+    <div class="modal" id="modal-playlist">
+      <div class="modal-playlist-content">
+          <!-- <span class="close-modal">&times</span> -->
+          <div class="form-container" id = music-container>
+              <div class = "playlist-header">
+                  Create a new playlist
+                  <div class="form-input">
+                      <input type="text" id="new-playlist-id" name="new-playlist-name" required>
+                      <button id="create-playlist-btn" class="create-playlist-btn">Create</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 
     <div class="modal" id="modal-music">
       <div class="modal-music-content">

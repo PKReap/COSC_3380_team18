@@ -104,22 +104,51 @@ modeSwitch.addEventListener("click", () => {
 const modal = document.querySelector("#modal-base");
 const musicModal = document.querySelector("#modal-music");
 const closeModal = document.querySelector(".close-modal");
+const playlistModal = document.querySelector('#modal-playlist')
+const modalPlaylistBtn = document.querySelector("#modal-playlist-btn")
+const create_playlist_button = document.getElementById("create-playlist-btn")
 
 var isModalOn = false;
 
-//Even
+
+
+create_playlist_button.addEventListener("click", () => {
+  const playlist_id_element = document.getElementById("new-playlist-id");
+  const playlist_name = playlist_id_element.value;
+  $.ajax({
+    url: "http://uhmusic.xyz/api/createPlaylist",
+    type: "POST",
+    data: JSON.stringify({
+      playlistName: playlist_name,
+      username: "User1"
+    }),
+    success: (data) => {
+      playlist_id_element.value = ""; 
+      alert("Playlist created successfully");
+    }
+  })
+})
+ 
 
 closeModal.addEventListener("click", () => {
   modal.style.display = "none";
   musicModal.style.display = "none";
+  playlistModal.style.display = "none"
   isModalOn = false;
 });
 
+
+modalPlaylistBtn.addEventListener("click",()=>{
+  playlistModal.style.display = "block"
+  toggle.click();
+  isModalOn = true
+})
+
 window.addEventListener("click", (e) => {
-  if (e.target == modal || e.target == musicModal) {
+  if (e.target == modal || e.target == musicModal || e.target == playlistModal) {
     modal.style.display = "none";
     musicModal.style.display = "none";
-
+    playlistModal.style.display = "none";
     isModalOn = false;
   }
 });

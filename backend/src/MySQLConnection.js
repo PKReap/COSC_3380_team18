@@ -118,9 +118,17 @@ function getAllTracks(args, callback) {
 function createPlaylist(args, callback) {
   const { username, playlistName } = args;
   const sql = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
-  query(sql, (error, result) => {
-    if (error) callback({ error: "Error creating playlist" });
-    else callback({ success: "Playlist succfully created" });
+  const checkIfPlaylistExists = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
+  query(checkIfPlaylistExists, (result) => {
+    if (result.length > 0) {
+      callback({ error: "Playlist already exists" });
+      return;
+    } else {
+      query(sql, (error, result) => {
+        if (error) callback({ error: "Error creating playlist" });
+        else callback({ success: "Playlist succfully created" });
+      });
+    }
   });
 }
 
