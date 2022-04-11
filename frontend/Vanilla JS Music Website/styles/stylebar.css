@@ -392,7 +392,7 @@ button{
     background: transparent;
     background-color: var(--sidebar-color);
     margin:7% auto;
-    width:19%;
+    width:30%;
     border-radius:20px;
     padding:20px;
 }
