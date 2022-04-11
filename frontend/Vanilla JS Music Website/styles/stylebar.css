@@ -562,6 +562,13 @@ textarea:focus, input:focus{
 
 }
 
+.image-model-add-playlist{
+    color: var(--text-color-alt);
+    text-align: center;
+    font-size: 15px;
+}
+
+
 .image-modal-title{
     margin-top:70px;
     color: var(--text-color);
@@ -615,6 +622,8 @@ textarea:focus, input:focus{
     /* background-color:; */
     padding:5px;
 }
+
+
 
 .playlist-header{
     color:var(--text-color);

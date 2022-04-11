@@ -140,6 +140,7 @@ const openMusicModal = (data) => {
   var audio_node = document.getElementById("image-modal-audio");
   var average_node = document.getElementById("image-modal-average");
   var genre_node = document.getElementById("image-modal-genre");
+  var add_to_playlist_node = document.getElementById("image-model-add-playlist");
 
   removeAllChildNodes(image_node);
   removeAllChildNodes(title_node);
@@ -147,6 +148,7 @@ const openMusicModal = (data) => {
   removeAllChildNodes(audio_node);
   removeAllChildNodes(average_node);
   removeAllChildNodes(genre_node);
+  removeAllChildNodes(add_to_playlist_node);
   
 
 
@@ -175,12 +177,26 @@ const openMusicModal = (data) => {
   genre_to_insert.innerHTML = "Genre: " + data.genre;
   genre_to_insert.setAttribute("class", "image-modal-genre");
 
+  add_to_playlist_to_insert = document.createElement("input");
+  add_to_playlist_to_insert.type = "text";
+  add_to_playlist_to_insert.setAttribute("class", "image-modal-add-playlist");
+  add_to_playlist_to_insert.placeholder = "Add to playlist";
+
+  const add_to_playlist_btn = document.createElement("button");
+  add_to_playlist_btn.innerHTML = "Add"
+  add_to_playlist_btn.setAttribute("class", "image-modal-add-playlist-btn");
+
+
+
+
   title_node.appendChild(title_to_insert);
   image_node.appendChild(image_to_insert);
   artist_node.appendChild(artist_to_insert);
   audio_node.appendChild(audio_to_insert);
   average_node.appendChild(average_to_insert);
   genre_node.appendChild(genre_to_insert);
+  add_to_playlist_node.appendChild(add_to_playlist_to_insert);
+  add_to_playlist_node.appendChild(add_to_playlist_btn);
 
   isModalOn = true;
   console.log(data);
