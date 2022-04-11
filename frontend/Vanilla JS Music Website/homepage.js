@@ -139,13 +139,17 @@ const openMusicModal = (data) => {
   var artist_node = document.getElementById("image-modal-artist");
   var audio_node = document.getElementById("image-modal-audio");
   var average_node = document.getElementById("image-modal-average");
+  var genre_node = document.getElementById("image-modal-genre");
 
   removeAllChildNodes(image_node);
   removeAllChildNodes(title_node);
   removeAllChildNodes(artist_node);
   removeAllChildNodes(audio_node);
   removeAllChildNodes(average_node);
+  removeAllChildNodes(genre_node);
   
+
+
   average_to_insert = document.createElement("div");
   average_to_insert.innerHTML = "Average Rating: " + data.average;
   average_to_insert.setAttribute("class", "image-modal-average");
@@ -167,11 +171,16 @@ const openMusicModal = (data) => {
   audio_to_insert.src = data.audio;
   audio_to_insert.setAttribute("class", "image-modal-audio");
 
+  genre_to_insert = document.createElement("div");
+  genre_to_insert.innerHTML = "Genre: " + data.genre;
+  genre_to_insert.setAttribute("class", "image-modal-genre");
+
   title_node.appendChild(title_to_insert);
   image_node.appendChild(image_to_insert);
   artist_node.appendChild(artist_to_insert);
   audio_node.appendChild(audio_to_insert);
   average_node.appendChild(average_to_insert);
+  genre_node.appendChild(genre_to_insert);
 
   isModalOn = true;
   console.log(data);
