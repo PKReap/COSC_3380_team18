@@ -485,7 +485,7 @@ textarea:focus, input:focus{
 /* Swiper */
 .thumbTiles {
     /* height:300px; */
-    height:300px;
+    height:400;
     margin-top:50px;
 
 }

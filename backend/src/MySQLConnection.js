@@ -125,41 +125,31 @@ function createPlaylist(args, callback) {
 }
 
 function insertTrackIntoPlaylist(args, callback) {
-  const { username, playlistName, trackIDs } = args;
-  if (trackIDs.length === 0) {
-    callback({ error: "No tracks selected" });
-    return;
-  }
+  const { username, playlistName, trackID } = args;
   const checkUserAlreadyHasPlaylist = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
   query(checkUserAlreadyHasPlaylist, (result) => {
-    if (result.length > 0) {
-      callback({ error: "User already has playlist with that name" });
-      return;
-    }
-    const insertPlaylist = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
-    query(insertPlaylist, (error, result) => {
-      const getHighestPlaylistID = `SELECT MAX(PlaylistID) AS PlaylistID FROM Playlists WHERE Username = "${username}"`;
-      query(getHighestPlaylistID, (result) => {
-        const { PlaylistID } = result[0];
-        trackIDs.forEach((trackID) => {
-          const insertTrackIntoPlaylist = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${PlaylistID}, ${trackID})`;
-          query(insertTrackIntoPlaylist, (error, result) => {
-            const checkIfRatingExists = `SELECT * FROM TrackRatings WHERE TrackID = ${trackID} AND Username = "${username}"`;
-            query(checkIfRatingExists, (result) => {
-              if (result.length > 0) {
-                callback({ success: "Playlist succfully created" });
-              } else {
-                const insertRating = `INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("${username}", ${trackID}, 0)`;
-                query(insertRating, (error, result) => {
-                  callback({ success: "Playlist succfully created" });
-                });
-              }
-            });
+    if (result.length === 0) {
+      callback({ message: "User does not have playlist" });
+    } else {
+      const getPlaylistID = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
+      query(getPlaylistID, (result) => {
+        const playlistID = result[0].PlaylistID;
+        const sql = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${playlistID}, ${trackID})`;
+        query(sql, (result) => {
+          const checkIfRatingExists = `SELECT * FROM TrackRatings WHERE TrackID = ${trackID} AND Username = "${username}"`;
+          query(checkIfRatingExists, (result) => {
+            if (result.length === 0) {
+              const sql = `INSERT INTO TrackRatings (TrackID, Username, Rating) VALUES (${trackID}, "${username}", 0)`;
+              query(sql, (result) => {
+                callback({ message: "Track succfully added to playlist" });
+              });
+            } else {
+              callback({ message: "Track succfully added to playlist" });
+            }
           });
         });
-        callback({ success: "Playlist succfully created" });
       });
-    });
+    }
   });
 }
 

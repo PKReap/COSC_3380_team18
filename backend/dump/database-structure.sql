@@ -150,8 +150,7 @@ INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 9);
 INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist1", "User1");
 
 INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 1);
-INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 2);
-INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (1, 3);
+
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 1, 0);
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 2, 0);
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 3, 0);

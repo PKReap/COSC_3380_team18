@@ -1,3 +1,12 @@
+function createElement(tag, params) {
+  const element = document.createElement(tag);
+  const keys = Object.keys(params);
+  for (let key of keys) {
+    element[key] = params[key];
+  }
+  return element;
+}
+
 var width =
   window.innerWidth ||
   document.documentElement.clientWidth ||
@@ -107,10 +116,7 @@ closeModal.addEventListener("click", () => {
 });
 
 window.addEventListener("click", (e) => {
-  if (
-    e.target == modal ||
-    e.target == musicModal
-  ) {
+  if (e.target == modal || e.target == musicModal) {
     modal.style.display = "none";
     musicModal.style.display = "none";
 
@@ -122,9 +128,18 @@ window.addEventListener("click", (e) => {
 modeSwitch.click();
 
 const addToSlider = (obj, data) => {
-  obj.appendSlide(
-    `<div class="swiper-slide"><img class = "thumbnail-img" src = ${data.image} alt = "mock image" id = ${data.index}></div>`
-  );
+  const new_slide = createElement("div", {
+    className: "swiper-slide",
+    innerHTML: data.song_name,
+  });
+  const image_slide = createElement("img", {
+    src: data.image,
+    className: "thumbnail-img",
+    alt: "mock image",
+    id: data.index,
+  });
+  new_slide.appendChild(image_slide);
+  obj.appendSlide(new_slide);
 };
 
 const getMusicData = (index) => {
@@ -140,7 +155,9 @@ const openMusicModal = (data) => {
   var audio_node = document.getElementById("image-modal-audio");
   var average_node = document.getElementById("image-modal-average");
   var genre_node = document.getElementById("image-modal-genre");
-  var add_to_playlist_node = document.getElementById("image-model-add-playlist");
+  var add_to_playlist_node = document.getElementById(
+    "image-model-add-playlist"
+  );
 
   removeAllChildNodes(image_node);
   removeAllChildNodes(title_node);
@@ -149,8 +166,6 @@ const openMusicModal = (data) => {
   removeAllChildNodes(average_node);
   removeAllChildNodes(genre_node);
   removeAllChildNodes(add_to_playlist_node);
-  
-
 
   average_to_insert = document.createElement("div");
   average_to_insert.innerHTML = "Average Rating: " + data.average;
@@ -183,11 +198,29 @@ const openMusicModal = (data) => {
   add_to_playlist_to_insert.placeholder = "Add to playlist";
 
   const add_to_playlist_btn = document.createElement("button");
-  add_to_playlist_btn.innerHTML = "Add"
+  add_to_playlist_btn.innerHTML = "Add";
   add_to_playlist_btn.setAttribute("class", "image-modal-add-playlist-btn");
-
-
-
+  add_to_playlist_btn.addEventListener("click", () => {
+    if (add_to_playlist_to_insert.value != "") {
+      const playlist_name = add_to_playlist_to_insert.value;
+      $.ajax({
+        type: "POST",
+        url: "http://uhmusic.xyz/api/insertTrackIntoPlaylist",
+        data: JSON.stringify({
+          username: "User1",
+          playlistName: playlist_name,
+          trackID: data.id,
+        }),
+        success: (data) => {
+          const { message } = data;
+          alert(message);
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
+  });
 
   title_node.appendChild(title_to_insert);
   image_node.appendChild(image_to_insert);
@@ -199,7 +232,6 @@ const openMusicModal = (data) => {
   add_to_playlist_node.appendChild(add_to_playlist_btn);
 
   isModalOn = true;
-  console.log(data);
 };
 
 function removeAllChildNodes(parent) {
@@ -207,7 +239,6 @@ function removeAllChildNodes(parent) {
     parent.removeChild(parent.firstChild);
   }
 }
-
 
 music_data = [];
 function createTracksSlider() {
@@ -226,37 +257,28 @@ function createTracksSlider() {
           TrackGenre,
           TrackName,
           TrackID,
-          IMG
+          IMG,
         } = track;
-        console.log(IMG);
         music_data.push({
-            index: music_data.length,
-            id: TrackID,
-            artist: ArtistName,
-            song_name: TrackName,
-            like: 0,
-            dislike: 0,
-            genre: TrackGenre,
-            average: AverageRating,
-            image: IMG,
-            audio: Link,
-          });
+          index: music_data.length,
+          id: TrackID,
+          artist: ArtistName,
+          song_name: TrackName,
+          like: 0,
+          dislike: 0,
+          genre: TrackGenre,
+          average: AverageRating,
+          image: IMG,
+          audio: Link,
+        });
       });
-        music_data.forEach((data) => {
-            addToSlider(swiper, data);
-        })
+      music_data.forEach((data) => {
+        addToSlider(swiper, data);
+      });
     },
-    
   });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   createTracksSlider();
 });
-
-// addToSlider(swiper, music_data[0]);
-// addToSlider(swiper, music_data[1]);
-// addToSlider(swiper, music_data[2]);
-// addToSlider(swiper, music_data[3]);
-// addToSlider(swiper, music_data[4]);
-// addToSlider(swiper, music_data[5]);
