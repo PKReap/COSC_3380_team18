@@ -191,16 +191,12 @@ function getAllTracksForPlaylist(args, callback) {
 function upload(args, callback) {
   const { b64, name } = args;
   const fs = require("fs");
-  // write the mp3 file to the server
-  // decode the base64 string, remove header information, and write to file
   const decoded = Buffer.from(b64, "base64");
+  const folderpath = "../frontend/music/";
 
-  fs.writeFile(name, decoded, (err) => {
-    if (err) {
-      callback({ error: "Error uploading sound" });
-      return;
-    }
-    callback({ success: "Sound succfully uploaded" });
+  fs.writeFile(folderpath + name, decoded, "binary", (err) => {
+    if (err) callback({ error: "Error uploading file" });
+    else callback({ success: "File uploaded successfully" });
   });
 }
 
