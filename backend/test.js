@@ -2,19 +2,15 @@ const axios = require("axios");
 const fs = require("fs");
 
 // read the sound.mp3 file
-const sound = fs.readFileSync("./sound.mp3");
-const b64Music = Buffer.from(sound).toString("base64");
-const IMG = fs.readFileSync("./nessfire.jpg");
-const b64IMG = Buffer.from(IMG).toString("base64");
+
 
 
 axios
-  .post("http://uhmusic.xyz/api/userRatesTrack", {
-    username: "User1",
-    trackID: 1,
-    rating: 5,
+  .post("http://uhmusic.xyz/api/validateUser", {
+    username: "User",
+    password: "Password123",
   })
   .then(function (response) {
-    const { success } = response.data;
-    console.log(success);
+    const { validation , username, userType } = response.data;
+    console.log(validation , username, userType);
   });

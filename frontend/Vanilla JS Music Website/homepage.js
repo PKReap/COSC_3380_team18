@@ -124,7 +124,8 @@ create_playlist_button.addEventListener("click", () => {
     }),
     success: (data) => {
       playlist_id_element.value = ""; 
-      alert("Playlist created successfully");
+      const {message} = data;
+      alert(message);
     }
   })
 })
@@ -187,6 +188,7 @@ const openMusicModal = (data) => {
   var add_to_playlist_node = document.getElementById(
     "image-model-add-playlist"
   );
+  var album_node = document.getElementById("image-modal-album");
 
   removeAllChildNodes(image_node);
   removeAllChildNodes(title_node);
@@ -195,6 +197,7 @@ const openMusicModal = (data) => {
   removeAllChildNodes(average_node);
   removeAllChildNodes(genre_node);
   removeAllChildNodes(add_to_playlist_node);
+  removeAllChildNodes(album_node);
 
   average_to_insert = document.createElement("div");
   average_to_insert.innerHTML = "Average Rating: " + data.average;
@@ -207,6 +210,10 @@ const openMusicModal = (data) => {
   title_to_insert = document.createElement("div");
   title_to_insert.innerHTML = data.song_name;
   title_to_insert.setAttribute("class", "image-modal-title");
+
+  album_to_insert = document.createElement("div");
+  album_to_insert.innerHTML = data.album;
+  album_to_insert.setAttribute("class", "image-modal-album");
 
   artist_to_insert = document.createElement("div");
   artist_to_insert.innerHTML = data.artist;
@@ -225,6 +232,7 @@ const openMusicModal = (data) => {
   add_to_playlist_to_insert.type = "text";
   add_to_playlist_to_insert.setAttribute("class", "image-modal-add-playlist");
   add_to_playlist_to_insert.placeholder = "Add to playlist";
+
 
   const add_to_playlist_btn = document.createElement("button");
   add_to_playlist_btn.innerHTML = "Add";
@@ -259,6 +267,7 @@ const openMusicModal = (data) => {
   genre_node.appendChild(genre_to_insert);
   add_to_playlist_node.appendChild(add_to_playlist_to_insert);
   add_to_playlist_node.appendChild(add_to_playlist_btn);
+  album_node.appendChild(album_to_insert);
 
   isModalOn = true;
 };
@@ -284,6 +293,7 @@ function createTracksSlider() {
           AverageRating,
           Link,
           TrackGenre,
+          LibraryName,
           TrackName,
           TrackID,
           IMG,
@@ -299,6 +309,7 @@ function createTracksSlider() {
           average: AverageRating,
           image: IMG,
           audio: Link,
+          album: LibraryName,
         });
       });
       music_data.forEach((data) => {

@@ -599,12 +599,7 @@ textarea:focus, input:focus{
     align-items: center;
 }
 
-.heart-modal{
-    float:right;
-    font-size:30px;
-    cursor: pointer;
-    color: var( --text-tertiary-color)
-}
+
 
 .heart-modal:hover{
     color:red;
@@ -623,6 +618,12 @@ textarea:focus, input:focus{
     color: var(--text-color);
     /* background-color:; */
     padding:5px;
+}
+
+.image-modal-album{
+    color: var(--text-color-alt);
+    text-align: center;
+    font-size: 15px;
 }
 
 .image-modal-genre{

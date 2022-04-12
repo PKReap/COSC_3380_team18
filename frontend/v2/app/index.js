@@ -28,12 +28,8 @@ window.onload = () => {
             for (const key in data["tracks"]) {
                 if (Object.hasOwnProperty.call(data["tracks"], key)) {
                     const track = data["tracks"][key];
-                    const img_path = `${path}img${
-                        track.TrackID - (1 % numOfImages)
-                    }.jpg`;
-                    console.log(img_path);
                     swiper.appendSlide(
-                        `<div class="swiper-slide"><div class = "swiper-slide-name">${track.TrackName}</div><img class = "thumbnail-img" src = ${img_path} alt = "mock image" id = ${track.TrackID}></div>`
+                        `<div class="swiper-slide"><div class = "swiper-slide-name">${track.TrackName}</div><img class = "thumbnail-img" src = ${track.IMG} alt = "mock image" id = ${track.TrackID}></div>`
                     );
                 }
             }
@@ -598,9 +594,8 @@ const insertHtmlElement = (
     }
     html_to_insert = document.createElement(elementType);
     if (elementType == "img") {
-        const img_path = `${path}img${data}.jpg`;
 
-        html_to_insert.src = img_path;
+        html_to_insert.src = data;
     } else if (elementType == "div") {
         html_to_insert.innerHTML = data;
     } else if (elementType == "audio") {
@@ -643,7 +638,7 @@ const playMusic = (track) =>{
         "image-modal-header",
         "img",
         "class",
-        imageID
+        track.IMG
     );
     insertHtmlElement(
         "image-modal-title",
@@ -670,6 +665,8 @@ const playMusic = (track) =>{
         "class",
         track.TrackGenre
     );
+    // insert the image
+
 
     insertHtmlElement(
         "image-modal-audio",

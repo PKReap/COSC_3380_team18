@@ -15,13 +15,16 @@ function validateUser(args, callback) {
   }
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
   query(sql, (result) => {
-    const { userName, UserType } = result.users;
-
-    const response = {
-      validation: result.length > 0,
-      userName,
-      UserType,
-    };
+    if (result.length > 0) {
+      const { Username, UserType } = result[0];
+      callback({
+        validation: "User logged in successfully",
+        username: Username,
+        userType: UserType,
+      });
+    } else {
+      callback({ validation: "Invalid username or password" });
+    }
 
     callback(response);
   });
