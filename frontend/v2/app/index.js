@@ -29,7 +29,7 @@ window.onload = () => {
                 if (Object.hasOwnProperty.call(data["tracks"], key)) {
                     const track = data["tracks"][key];
                     swiper.appendSlide(
-                        `<div class="swiper-slide"><div class = "swiper-slide-name">${track.TrackName}</div><img class = "thumbnail-img" src = ${track.IMG} alt = "mock image" id = ${track.TrackID}></div>`
+                        `<div class="swiper-slide"><div class = "swiper-slide-name">${track.TrackName}</div><img class = "thumbnail-img" src = '${track.IMG}' alt = "mock image" id = ${track.TrackID}></div>`
                     );
                 }
             }
@@ -573,11 +573,6 @@ const addToPlaylist = (e) => {
 // Make dark mode default
 modeSwitch.click();
 
-const addToSlider = (obj, data) => {
-    obj.appendSlide(
-        `<div class="swiper-slide"><img class = "thumbnail-img" src = ${data.image} alt = "mock image" id = ${data.index}></div>`
-    );
-};
 
 const insertHtmlElement = (
     elementId,
@@ -632,7 +627,6 @@ const removeAllChildNodes = (parent) => {
 
 
 const playMusic = (track) =>{
-    imageID = track.TrackID-1%numOfImages
 
     insertHtmlElement(
         "image-modal-header",
