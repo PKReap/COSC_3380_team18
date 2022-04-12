@@ -32,7 +32,7 @@
 .active, .collapsible:hover {
     background-color: #555;
   }
-  
+
   .content {
     padding: 0 18px;
     background-color: white;
@@ -44,25 +44,44 @@
   #table-wrapper {
     position:relative;
   }
-
-  #content table {
+  #table-scroll {
+    height:1000px;
+    overflow:scroll;
+    margin-top:0px;
+    width: 100%;
+  }
+  #table-wrapper table {
     width:100%;
   }
-  
-  #content table * {
+
+  #table-wrapper table * {
     border: #333 1px solid;
     color:black;
     text-align: center;
   }
-  #content table td:first-child {
-    width:0%;
+  #table-wrapper table td:first-child {
+    width:5%;
   }
   
+
+  #table-wrapper table td:nth-child(2) {
+    width: 20%;
+  }
+  #table-wrapper table td:nth-child(3) {
+    width: 20%;
+  }
+  #table-wrapper table td:nth-child(4) {
+    width: 20%;
+  }
+
+  #table-wrapper table td:nth-child(5) {
+    width: 20%;
+  }
   #table-wrapper table td:nth-child(6) {
-    width: 0%;
+    width: 5%;
   }
-  
+
+
   #table-wrapper table td:last-child {
-    padding-right:0; 
     width: 0%;
   }

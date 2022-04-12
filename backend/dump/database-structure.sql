@@ -57,6 +57,7 @@ CREATE TABLE
         PTID INT NOT NULL AUTO_INCREMENT,
         PlaylistID INT NOT NULL,
         TrackID INT NOT NULL,
+        IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
         FOREIGN KEY (PlaylistID) REFERENCES Playlists(PlaylistID),
         FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
@@ -67,6 +68,8 @@ CREATE TABLE
         LTID INT NOT NULL AUTO_INCREMENT,
         LibraryID INT NOT NULL,
         TrackID INT NOT NULL,
+                IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
+
         FOREIGN KEY (LibraryID) REFERENCES Libraries(LibraryID),
 		FOREIGN KEY (TrackID) REFERENCES Tracks(TrackID)
     );
@@ -91,12 +94,24 @@ INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Dance Dance Revolution"
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Electric Boogaloo", "Arist1");
 
 delimiter //
-CREATE TRIGGER calc_avg_rating 
+CREATE TRIGGER calc_avg_rating_insert
     AFTER INSERT ON TrackRatings
     FOR EACH ROW
     BEGIN
         UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID)
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = FALSE AND Rating > 0)
+        WHERE TrackID = NEW.TrackID;
+    END; //
+delimiter ;
+
+
+delimiter //
+CREATE TRIGGER calc_avg_rating_update 
+    AFTER UPDATE ON TrackRatings
+    FOR EACH ROW
+    BEGIN
+        UPDATE Tracks
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = FALSE AND Rating > 0)
         WHERE TrackID = NEW.TrackID;
     END; //
 delimiter ;
@@ -158,12 +173,13 @@ INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 4, 0);
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 5, 0);
 -- create a view with tracks and playlist ID with the user's rating
 CREATE VIEW Playlist_Tracks_View AS
-    SELECT Playlist_Tracks.PlaylistID, Playlist_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName, Tracks.IMG
+    SELECT Playlist_Tracks.PlaylistID, Playlist_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName, Tracks.IMG,
+    Playlist_Tracks.IsDeleted
     FROM Playlist_Tracks
     INNER JOIN Tracks ON Playlist_Tracks.TrackID = Tracks.TrackID;
     
 CREATE VIEW Library_Tracks_View AS
-    SELECT Library_Tracks.LibraryID, Library_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName, Tracks.AverageRating, Tracks.IMG
+    SELECT Library_Tracks.LibraryID, Library_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName, Tracks.AverageRating, Tracks.IMG, Library_Tracks.IsDeleted
     FROM Library_Tracks
     INNER JOIN Tracks ON Library_Tracks.TrackID = Tracks.TrackID;
 

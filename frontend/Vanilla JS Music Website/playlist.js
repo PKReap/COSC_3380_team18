@@ -1,4 +1,4 @@
-const host = "http://localhost:3000/api/";
+const host = "http://uhmusic.xyz/api/";
 function createElement(tag, params) {
   const element = document.createElement(tag);
   const keys = Object.keys(params);
@@ -34,6 +34,7 @@ function createTableHeaders() {
     "Artist",
     "Genre",
     "Rating",
+    "Image",
     "Play",
   ];
   columns.forEach((column) => {
@@ -64,13 +65,25 @@ function getAllLibraries() {
         $.ajax({
           url: `${host}getAllTracksForPlaylist`,
           type: "POST",
-          data: JSON.stringify({ playlistID: playlist.PlaylistID, username: "User1" }),
+          data: JSON.stringify({
+            playlistID: playlist.PlaylistID,
+            username: "User1",
+          }),
           success: (data) => {
             const { tracks } = data;
             const table = createTableHeaders();
             const tbody = createElement("tbody", {});
             tracks.forEach((track) => {
-              const {TrackID, TrackName, ArtistName, LibraryName, TrackGenre, Link, Rating} = track;
+              const {
+                TrackID,
+                TrackName,
+                ArtistName,
+                LibraryName,
+                TrackGenre,
+                Link,
+                Rating,
+                IMG,
+              } = track;
               const tr = createElement("tr", {});
               const checkbox = createElement("input", {
                 type: "checkbox",
@@ -80,20 +93,49 @@ function getAllLibraries() {
                 controls: true,
                 src: Link,
               });
+              const ratingSelection = createElement("select", {
+                id: TrackID,
+              });
+              const options = [0, 1, 2, 3, 4, 5];
+              options.forEach((option) => {
+                const optionElement = createElement("option", {
+                  value: option,
+                  innerHTML: option,
+                });
+                ratingSelection.appendChild(optionElement);
+              });
 
+              ratingSelection.addEventListener("change", function () {
+                const { value } = this;
+                const trackID = TrackID
+                $.ajax({}).then(() => {})
+              })
+
+              const img = createElement("img", {
+                src: IMG,
+              });
+              const tdCheckbox = createElement("td", {});
+              const tdRating = createElement("td", {});
+              const tdIMG = createElement("td", {});
+              tdIMG.appendChild(img);
+              // shrink the image
+              img.style.width = "120px";
+              img.style.height = "120px";
+              tdCheckbox.appendChild(checkbox);
+              tdRating.appendChild(ratingSelection);
               const columns = [
-                checkbox,
+                tdCheckbox,
                 createElement("td", { innerHTML: TrackName }),
                 createElement("td", { innerHTML: LibraryName }),
                 createElement("td", { innerHTML: ArtistName }),
                 createElement("td", { innerHTML: TrackGenre }),
-                createElement("td", { innerHTML: Rating }),
+                tdRating,
+                tdIMG,
                 audio,
               ];
               columns.forEach((column) => {
                 tr.appendChild(column);
-              }
-              );  
+              });
               tbody.appendChild(tr);
             });
             table.appendChild(tbody);

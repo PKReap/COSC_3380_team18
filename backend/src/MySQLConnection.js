@@ -168,7 +168,7 @@ function userGetAllPlaylists(args, callback) {
     const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}"`;
     query(getAllUsersTracks, (result) => {
       const response = {
-        playlists: result,
+        playlists: result.filter((playlist) => playlist.IsDeleted === 0),
       };
       callback(response);
     });
@@ -180,7 +180,7 @@ function getAllTracksForPlaylist(args, callback) {
   const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID}`;
   query(sql, (result) => {
     const response = {
-      tracks: result,
+      tracks: result.filter((track) => track.IsDeleted === 0),
     };
     callback(response);
   });

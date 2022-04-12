@@ -494,7 +494,7 @@ textarea:focus, input:focus{
 /* Swiper */
 .thumbTiles {
     /* height:300px; */
-    height:400;
+    height: 320px;
     margin-top:50px;
 
 }
@@ -552,6 +552,7 @@ textarea:focus, input:focus{
 .swiper-slide{
     padding: 0 5px;
     transition: 250ms all;
+    font-size: large;
 
 }
 .swiper-slide:hover{
