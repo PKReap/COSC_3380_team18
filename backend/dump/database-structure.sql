@@ -102,7 +102,7 @@ CREATE TRIGGER calc_avg_rating_update
     FOR EACH ROW
     BEGIN
         UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = FALSE AND Rating > 0)
+        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = FALSE AND Rating != 0)
         WHERE TrackID = NEW.TrackID;
     END; //
 delimiter ;
@@ -190,4 +190,4 @@ INSERT TrackRatings (Username, TrackID, Rating) VALUES ("Admin1", 1, 0);
 UPDATE TrackRatings SET Rating = 3 WHERE Username = "Admin1" AND TrackID = 1;
 
 
-SELECT LibraryID FROM Libraries WHERE ArtistName = "Artist1";
+SELECT * FROM Tracks;

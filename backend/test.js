@@ -9,13 +9,10 @@ const b64IMG = Buffer.from(IMG).toString("base64");
 
 
 axios
-  .post("http://uhmusic.xyz/api/upload", {
-    b64Music,
-    b64IMG,
-    name: "sound",
-    libraryName: "Dance Dance Revolution",
-    trackGenre: "Rock",
-    artistName: "Artist1"
+  .post("http://uhmusic.xyz/api/userRatesTrack", {
+    username: "User1",
+    trackID: 1,
+    rating: 5,
   })
   .then(function (response) {
     const { success } = response.data;

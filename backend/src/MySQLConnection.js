@@ -117,18 +117,28 @@ function getAllTracks(args, callback) {
 
 function createPlaylist(args, callback) {
   const { username, playlistName } = args;
-  const sql = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
-  const checkIfPlaylistExists = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
-  query(checkIfPlaylistExists, (result) => {
-    if (result.length > 0) {
-      callback({ error: "Playlist already exists" });
-      return;
-    } else {
-      query(sql, (error, result) => {
-        if (error) callback({ error: "Error creating playlist" });
-        else callback({ success: "Playlist succfully created" });
+  const getPlaylistLimit = `SELECT * FROM Users WHERE Username = "${username}"`;
+  query(getPlaylistLimit, (result) => {
+    const playlistLimit = result[0].PlaylistLimit;
+    const checkHowManyPlaylists = `SELECT * FROM Playlists WHERE Username = "${username}"`;
+    query(checkHowManyPlaylists, (result) => {
+      if (result.length >= playlistLimit) {
+        callback({ message: "You have reached your playlist limit" });
+        return;
+      }
+      const sql = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
+      const checkIfPlaylistExists = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
+      query(checkIfPlaylistExists, (result) => {
+        if (result.length > 0) {
+          callback({ message: "Playlist already exists" });
+          return;
+        } else {
+          query(sql, (error, result) => {
+            callback({ message: "Playlist created successfully" });
+          });
+        }
       });
-    }
+    });
   });
 }
 
@@ -200,7 +210,7 @@ function upload(args, callback) {
     if (err) callback({ error: "Error uploading file" });
     fs.writeFile(imgpath + name + ".jpg", decodedIMG, "binary", (err) => {
       if (err) callback({ error: "Error uploading file" });
-       const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) VALUES ('${name}', '${artistName}', '${trackGenre}', '${musicFileLink}', '${libraryName}', '${imgFileLink}')`;
+      const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) VALUES ('${name}', '${artistName}', '${trackGenre}', '${musicFileLink}', '${libraryName}', '${imgFileLink}')`;
       query(insertTrack, (result) => {
         const getNewTrackID = `SELECT TrackID FROM Tracks WHERE TrackName = '${name}' AND ArtistName = '${artistName}' AND LibraryName = '${libraryName}'`;
         query(getNewTrackID, (result) => {
@@ -219,7 +229,13 @@ function upload(args, callback) {
   });
 }
 
-
+function userRatesTrack(args, callback) {
+  const { username, trackID, rating } = args;
+  const sql = `UPDATE TrackRatings SET Rating = ${rating} WHERE TrackID = ${trackID} AND Username = '${username}'`;
+  query(sql, (result) => {
+    callback({ success: "Track succfully rated" });
+  });
+}
 
 module.exports = {
   validateUser,
@@ -235,4 +251,5 @@ module.exports = {
   getAllTracksForPlaylist,
   createPlaylist,
   upload,
+  userRatesTrack,
 };
