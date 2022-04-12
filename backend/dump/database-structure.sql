@@ -7,7 +7,7 @@ CREATE TABLE
     IF NOT EXISTS Users (
         Username VARCHAR(50) NOT NULL UNIQUE,
         UserPassword VARCHAR(50) NOT NULL,
-        UserType ENUM("Admin", "Arist", "User") NOT NULL,
+        UserType ENUM("Admin", "Artist", "User") NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
 	    UserLevel INT NOT NULL DEFAULT 0,
         PlaylistLimit INT NOT NULL DEFAULT 5,
@@ -86,23 +86,14 @@ CREATE TABLE
         FOREIGN KEY (Username) REFERENCES Users(Username)
     );
 
-INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Arist1", "Password123", "Arist");
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Artist1", "Password123", "Artist");
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("User1", "Password123", "User");
 INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password123", "Admin");
 
-INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Dance Dance Revolution", "Arist1");
-INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Electric Boogaloo", "Arist1");
+INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Dance Dance Revolution", "Artist1");
+INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Electric Boogaloo", "Artist1");
 
-delimiter //
-CREATE TRIGGER calc_avg_rating_insert
-    AFTER INSERT ON TrackRatings
-    FOR EACH ROW
-    BEGIN
-        UPDATE Tracks
-        SET AverageRating = (SELECT AVG(Rating) FROM TrackRatings WHERE TrackID = NEW.TrackID AND IsDeleted = FALSE AND Rating > 0)
-        WHERE TrackID = NEW.TrackID;
-    END; //
-delimiter ;
+
 
 
 delimiter //
@@ -195,4 +186,8 @@ CREATE TRIGGER on_rating_change
 delimiter ;
 
 
-SELECT * FROM Users WHERE Username = "User1";
+INSERT TrackRatings (Username, TrackID, Rating) VALUES ("Admin1", 1, 0);
+UPDATE TrackRatings SET Rating = 3 WHERE Username = "Admin1" AND TrackID = 1;
+
+
+SELECT LibraryID FROM Libraries WHERE ArtistName = "Artist1";

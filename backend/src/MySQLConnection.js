@@ -187,16 +187,39 @@ function getAllTracksForPlaylist(args, callback) {
 }
 
 function upload(args, callback) {
-  const { b64, name } = args;
+  const { b64Music, b64IMG, name, libraryName, trackGenre, artistName } = args;
   const fs = require("fs");
-  const decoded = Buffer.from(b64, "base64");
-  const folderpath = "../frontend/music/";
-
-  fs.writeFile(folderpath + name, decoded, "binary", (err) => {
+  const decodedMusic = Buffer.from(b64Music, "base64");
+  const decodedIMG = Buffer.from(b64IMG, "base64");
+  const musicpath = "../frontend/music/";
+  const imgpath = "../frontend/img/";
+  const host = "http://uhmusic.xyz/";
+  const musicFileLink = `${host}music/${name}.mp3`;
+  const imgFileLink = `${host}img/${name}.jpg`;
+  fs.writeFile(musicpath + name + ".mp3", decodedMusic, "binary", (err) => {
     if (err) callback({ error: "Error uploading file" });
-    else callback({ success: "File uploaded successfully" });
+    fs.writeFile(imgpath + name + ".jpg", decodedIMG, "binary", (err) => {
+      if (err) callback({ error: "Error uploading file" });
+       const insertTrack = `INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) VALUES ('${name}', '${artistName}', '${trackGenre}', '${musicFileLink}', '${libraryName}', '${imgFileLink}')`;
+      query(insertTrack, (result) => {
+        const getNewTrackID = `SELECT TrackID FROM Tracks WHERE TrackName = '${name}' AND ArtistName = '${artistName}' AND LibraryName = '${libraryName}'`;
+        query(getNewTrackID, (result) => {
+          const trackID = result[0].TrackID;
+          const getLibraryID = `SELECT LibraryID FROM Libraries WHERE LibraryName = '${libraryName}' AND ArtistName = '${artistName}'`;
+          query(getLibraryID, (result) => {
+            const libraryID = result[0].LibraryID;
+            const insertTrackIntoLibrary = `INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (${libraryID}, ${trackID})`;
+            query(insertTrackIntoLibrary, (result) => {
+              callback({ success: "Track succfully uploaded" });
+            });
+          });
+        });
+      });
+    });
   });
 }
+
+
 
 module.exports = {
   validateUser,
