@@ -191,3 +191,5 @@ UPDATE TrackRatings SET Rating = 3 WHERE Username = "Admin1" AND TrackID = 1;
 
 
 SELECT * FROM Tracks;
+
+-- SELECT * FROM Library_Tracks_View ORDER BY AverageRating * (SELECT COUNT(TrackID) FROM TrackRatings WHERE TrackID = Library_Tracks_View.TrackID AND Rating > 0) DESC;

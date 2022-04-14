@@ -109,7 +109,7 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  const sql = "SELECT * FROM Library_Tracks_View WHERE IsDeleted = False ORDER BY AverageRating DESC";
+  const sql = "SELECT * FROM Library_Tracks_View ORDER BY AverageRating * (SELECT COUNT(TrackID) FROM TrackRatings WHERE TrackID = Library_Tracks_View.TrackID AND Rating > 0) DESC";
   query(sql, (result) => {
     const response = {
       tracks: result,
