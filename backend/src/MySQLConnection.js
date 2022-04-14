@@ -109,7 +109,7 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  const sql = "SELECT * FROM Library_Tracks_View";
+  const sql = "SELECT * FROM Library_Tracks_View WHERE IsDeleted = False ORDER BY AverageRating DESC";
   query(sql, (result) => {
     const response = {
       tracks: result,
@@ -176,9 +176,9 @@ function insertTrackIntoPlaylist(args, callback) {
 
 function userGetAllPlaylists(args, callback) {
   const { username } = args;
-  const getAllPlaylistIDs = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}"`;
+  const getAllPlaylistIDs = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}" AND IsDeleted = False`;
   query(getAllPlaylistIDs, (result) => {
-    const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}"`;
+    const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}" AND IsDeleted = False`;
     query(getAllUsersTracks, (result) => {
       const response = {
         playlists: result.filter((playlist) => playlist.IsDeleted === 0),
@@ -190,7 +190,7 @@ function userGetAllPlaylists(args, callback) {
 
 function getAllTracksForPlaylist(args, callback) {
   const { playlistID, username } = args;
-  const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID}`;
+  const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID} AND TrackRatings.IsDeleted = False`;
   query(sql, (result) => {
     const response = {
       tracks: result.filter((track) => track.IsDeleted === 0),
@@ -234,9 +234,49 @@ function upload(args, callback) {
 
 function userRatesTrack(args, callback) {
   const { username, trackID, rating } = args;
-  const sql = `UPDATE TrackRatings SET Rating = ${rating} WHERE TrackID = ${trackID} AND Username = '${username}'`;
+  const sql = `UPDATE TrackRatings SET Rating = ${rating} WHERE TrackID = ${trackID} AND Username = '${username}' AND IsDeleted = False`;
   query(sql, (result) => {
     callback({ success: "Track succfully rated" });
+  });
+}
+function createLibrary(args, callback) {
+  const { username, libraryName } = args;
+  const sql = `INSERT INTO Libraries (LibraryName, ArtistName) VALUES ('${libraryName}', '${username}')`;
+  query(sql, (result) => {
+    callback({ success: "Library succfully created" });
+  })
+}
+
+function deleteLibrary(args, callback) {
+  const { username, libraryName } = args;
+  const sql = `UPDATE Libraries SET IsDeleted = True WHERE LibraryName = '${libraryName}' AND ArtistName = '${username}'`;
+  query(sql, (result) => {
+    callback({ success: `${libraryName} successfully deleted` });
+  })
+}
+
+function deletePlaylist(args, callback) {
+  const { username, playlistName } = args;
+  const sql = `UPDATE Playlists SET IsDeleted = True WHERE PlaylistName = '${playlistName}' AND Username = '${username}'`;
+  query(sql, (result) => {
+    callback({ success: `${playlistName} successfully deleted` });
+  })
+}
+
+
+function deleteTrack(args, callback) {
+  const { trackID } = args;
+  const sql = `UPDATE Tracks SET IsDeleted = True WHERE TrackID = ${trackID}`;
+  query(sql, (result) => {
+    callback({ success: "Track succfully deleted" });
+  })
+}
+
+function getTrackByID(args, callback) {
+  const { trackID } = args;
+  const sql = `SELECT * FROM Library_Tracks_View WHERE TrackID = ${trackID}`;
+  query(sql, (result) => {
+    callback({ track: result[0] });
   });
 }
 
@@ -255,4 +295,9 @@ module.exports = {
   createPlaylist,
   upload,
   userRatesTrack,
+  createLibrary,
+  deleteLibrary,
+  deletePlaylist,
+  deleteTrack,
+  getTrackByID
 };

@@ -1,6 +1,5 @@
 //Temp Values
 //----------------------------------------------------------------
-const path = "../assets/images/";
 const numOfImages = 15;
 // const username = "Artist1";
 const username = "User1"
