@@ -6,7 +6,7 @@ USE MusicLibrary;
 CREATE TABLE
     IF NOT EXISTS Users (
         Username VARCHAR(50) NOT NULL UNIQUE,
-        UserPassword VARCHAR(50) NOT NULL,
+        UserPassword VARCHAR(65) NOT NULL,
         UserType ENUM("Admin", "Artist", "User") NOT NULL,
         IsDeleted BOOLEAN NOT NULL DEFAULT FALSE,
 	    UserLevel INT NOT NULL DEFAULT 0,
@@ -86,9 +86,9 @@ CREATE TABLE
         FOREIGN KEY (Username) REFERENCES Users(Username)
     );
 
-INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Artist1", "Password123", "Artist");
-INSERT INTO Users (Username, UserPassword, UserType) VALUES ("User1", "Password123", "User");
-INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "Password123", "Admin");
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Artist1", "0f9776d02808a35d76bb18b6215b091cb592806b913469e1e9413b45406edc71", "Artist");
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("User1", "625089b9a6aea286ad1795d1f877928741d702e38e4be85417b5558160e58914", "User");
+INSERT INTO Users (Username, UserPassword, UserType) VALUES ("Admin1", "c4d478fa208d534cc1265bc69b7802f3c29375f3ff5aaea5b4636fcae4229c40", "Admin");
 
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Dance Dance Revolution", "Artist1");
 INSERT INTO Libraries (LibraryName, ArtistName) VALUES ("Electric Boogaloo", "Artist1");
@@ -180,7 +180,7 @@ CREATE TRIGGER on_rating_change
     FOR EACH ROW
     BEGIN
     UPDATE Users
-        SET PlaylistLimit = 5 + FLOOR((SELECT COUNT(Username) FROM TrackRatings WHERE Username = NEW.Username AND Rating > 0) / 5)
+        SET PlaylistLimit = 5 + FLOOR((SELECT COUNT(Username) FROM TrackRatings WHERE Username = NEW.Username AND Rating > 0 AND IsDeleted == False) / 5)
         WHERE Username = NEW.Username;
     END; //
 delimiter ;
@@ -192,4 +192,14 @@ UPDATE TrackRatings SET Rating = 3 WHERE Username = "Admin1" AND TrackID = 1;
 
 SELECT * FROM Tracks;
 
--- SELECT * FROM Library_Tracks_View ORDER BY AverageRating * (SELECT COUNT(TrackID) FROM TrackRatings WHERE TrackID = Library_Tracks_View.TrackID AND Rating > 0) DESC;
+-- alter UserPassword to be of size 65
+ALTER TABLE Users MODIFY UserPassword VARCHAR(65) NOT NULL;
+
+-- update Admin1 password to "0f9776d02808a35d76bb18b6215b091cb592806b913469e1e9413b45406edc71"
+UPDATE Users SET UserPassword = "0f9776d02808a35d76bb18b6215b091cb592806b913469e1e9413b45406edc71" WHERE Username = "Admin1";
+
+-- Update User1 password to "c4d478fa208d534cc1265bc69b7802f3c29375f3ff5aaea5b4636fcae4229c40"
+UPDATE Users SET UserPassword = "c4d478fa208d534cc1265bc69b7802f3c29375f3ff5aaea5b4636fcae4229c40" WHERE Username = "User1";
+
+-- Update Artist1 password to "d2e1fb55bfe86feda97ca54f3b0f900cac856e65d7835f25a8c89e09c226be45"
+UPDATE Users SET UserPassword = "625089b9a6aea286ad1795d1f877928741d702e38e4be85417b5558160e58914" WHERE Username = "Artist1";

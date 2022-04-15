@@ -13,12 +13,14 @@ function validateUser(args, callback) {
     callback({ error: "Invalid username or password" });
     return;
   }
+  // salting password by adding name of user and repeating the string 32 times
+  const salt = (username + password).repeat(32);
+  const hashedPassword = require("crypto")
+    .createHash("sha256")
+    .update(salt)
+    .digest("hex");
 
-  // sha256 hash the password 
-  
-  const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
-
- 
+  const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${hashedPassword}'`;
 
   query(sql, (result) => {
     if (result.length > 0) {
@@ -115,7 +117,8 @@ function deleteUser(args, callback) {
 }
 
 function getAllTracks(args, callback) {
-  const sql = "SELECT * FROM Library_Tracks_View ORDER BY AverageRating * (SELECT COUNT(TrackID) FROM TrackRatings WHERE TrackID = Library_Tracks_View.TrackID AND Rating > 0) DESC";
+  const sql =
+    "SELECT * FROM Library_Tracks_View ORDER BY AverageRating * (SELECT COUNT(TrackID) FROM TrackRatings WHERE TrackID = Library_Tracks_View.TrackID AND Rating > 0) DESC";
   query(sql, (result) => {
     const response = {
       tracks: result,
@@ -126,17 +129,27 @@ function getAllTracks(args, callback) {
 
 function createPlaylist(args, callback) {
   const { username, playlistName } = args;
-  const getPlaylistLimit = `SELECT * FROM Users WHERE Username = "${username}"`;
+
+  // join the playlist on spaces
+  const playlistNameWithSpaces = playlistName.split(" ").join("");
+  // check for any invalid characters
+  if (playlistNameWithSpaces.match(/[^a-zA-Z0-9]/)) {
+    callback({ message: "Invalid playlist name" });
+    return;
+  }
+
+
+  const getPlaylistLimit = `SELECT * FROM Users WHERE Username = "${username}" AND IsDeleted = False`;
   query(getPlaylistLimit, (result) => {
     const playlistLimit = result[0].PlaylistLimit;
-    const checkHowManyPlaylists = `SELECT * FROM Playlists WHERE Username = "${username}"`;
+    const checkHowManyPlaylists = `SELECT * FROM Playlists WHERE Username = "${username}" AND IsDeleted = False`;
     query(checkHowManyPlaylists, (result) => {
       if (result.length >= playlistLimit) {
         callback({ message: "You have reached your playlist limit" });
         return;
       }
       const sql = `INSERT INTO Playlists (Username, PlaylistName) VALUES ("${username}", '${playlistName}')`;
-      const checkIfPlaylistExists = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
+      const checkIfPlaylistExists = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}' AND IsDeleted = False`;
       query(checkIfPlaylistExists, (result) => {
         if (result.length > 0) {
           callback({ message: "Playlist already exists" });
@@ -153,44 +166,34 @@ function createPlaylist(args, callback) {
 
 function insertTrackIntoPlaylist(args, callback) {
   const { username, playlistName, trackID } = args;
-  const checkUserAlreadyHasPlaylist = `SELECT * FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
-  query(checkUserAlreadyHasPlaylist, (result) => {
-    if (result.length === 0) {
-      callback({ message: "User does not have playlist" });
-    } else {
-      const getPlaylistID = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}'`;
-      query(getPlaylistID, (result) => {
-        const playlistID = result[0].PlaylistID;
-        const sql = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${playlistID}, ${trackID})`;
-        query(sql, (result) => {
-          const checkIfRatingExists = `SELECT * FROM TrackRatings WHERE TrackID = ${trackID} AND Username = "${username}"`;
-          query(checkIfRatingExists, (result) => {
-            if (result.length === 0) {
-              const sql = `INSERT INTO TrackRatings (TrackID, Username, Rating) VALUES (${trackID}, "${username}", 0)`;
-              query(sql, (result) => {
-                callback({ message: "Track succfully added to playlist" });
-              });
-            } else {
-              callback({ message: "Track succfully added to playlist" });
-            }
+  const getPlaylistID = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}" AND PlaylistName = '${playlistName}' AND IsDeleted = False`;
+  query(getPlaylistID, (result) => {
+    const playlistID = result[0].PlaylistID;
+    const sql = `INSERT INTO Playlist_Tracks (PlaylistID, TrackID) VALUES (${playlistID}, ${trackID})`;
+    query(sql, (result) => {
+      const checkIfRatingExists = `SELECT * FROM TrackRatings WHERE TrackID = ${trackID} AND Username = "${username}"`;
+      query(checkIfRatingExists, (result) => {
+        if (result.length === 0) {
+          const sql = `INSERT INTO TrackRatings (TrackID, Username, Rating) VALUES (${trackID}, "${username}", 0)`;
+          query(sql, (result) => {
+            callback({ message: "Track succfully added to playlist" });
           });
-        });
+        } else {
+          callback({ message: "Track succfully added to playlist" });
+        }
       });
-    }
+    });
   });
 }
 
 function userGetAllPlaylists(args, callback) {
   const { username } = args;
-  const getAllPlaylistIDs = `SELECT PlaylistID FROM Playlists WHERE Username = "${username}" AND IsDeleted = False`;
-  query(getAllPlaylistIDs, (result) => {
-    const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}" AND IsDeleted = False`;
-    query(getAllUsersTracks, (result) => {
-      const response = {
-        playlists: result.filter((playlist) => playlist.IsDeleted === 0),
-      };
-      callback(response);
-    });
+  const getAllUsersTracks = `SELECT * FROM Playlists WHERE Username = "${username}" AND IsDeleted = False`;
+  query(getAllUsersTracks, (result) => {
+    const response = {
+      playlists: result.filter((playlist) => playlist.IsDeleted === 0),
+    };
+    callback(response);
   });
 }
 
@@ -207,6 +210,15 @@ function getAllTracksForPlaylist(args, callback) {
 
 function upload(args, callback) {
   const { b64Music, b64IMG, name, libraryName, trackGenre, artistName } = args;
+  // join the name on spaces
+  const nameWithoutSpaces = name.split(" ").join("");
+  // check for any invalid characters
+  if (nameWithoutSpaces.match(/[^a-zA-Z0-9]/)) {
+    callback({ message: "Invalid track name" });
+    return;
+  }
+
+
   const fs = require("fs");
   const decodedMusic = Buffer.from(b64Music, "base64");
   const decodedIMG = Buffer.from(b64IMG, "base64");
@@ -247,10 +259,20 @@ function userRatesTrack(args, callback) {
 }
 function createLibrary(args, callback) {
   const { username, libraryName } = args;
+  // join the name on spaces
+  const nameWithoutSpaces = libraryName.split(" ").join("");
+  // check for any invalid characters
+  if (nameWithoutSpaces.match(/[^a-zA-Z0-9]/)) {
+    callback({ message: "Invalid library name" });
+    return;
+  }
+
+
+
   const sql = `INSERT INTO Libraries (LibraryName, ArtistName) VALUES ('${libraryName}', '${username}')`;
   query(sql, (result) => {
     callback({ success: "Library succfully created" });
-  })
+  });
 }
 
 function deleteLibrary(args, callback) {
@@ -258,7 +280,7 @@ function deleteLibrary(args, callback) {
   const sql = `UPDATE Libraries SET IsDeleted = True WHERE LibraryName = '${libraryName}' AND ArtistName = '${username}'`;
   query(sql, (result) => {
     callback({ success: `${libraryName} successfully deleted` });
-  })
+  });
 }
 
 function deletePlaylist(args, callback) {
@@ -266,16 +288,15 @@ function deletePlaylist(args, callback) {
   const sql = `UPDATE Playlists SET IsDeleted = True WHERE PlaylistName = '${playlistName}' AND Username = '${username}'`;
   query(sql, (result) => {
     callback({ success: `${playlistName} successfully deleted` });
-  })
+  });
 }
-
 
 function deleteTrack(args, callback) {
   const { trackID } = args;
   const sql = `UPDATE Tracks SET IsDeleted = True WHERE TrackID = ${trackID}`;
   query(sql, (result) => {
     callback({ success: "Track succfully deleted" });
-  })
+  });
 }
 
 function getTrackByID(args, callback) {
@@ -291,9 +312,8 @@ function deleteTrackFromPlaylist(args, callback) {
   const sql = `UPDATE Playlist_Tracks SET IsDeleted = True WHERE PlaylistID = ${playlistID} AND TrackID = ${trackID}`;
   query(sql, (result) => {
     callback({ message: "Track succfully deleted" });
-  })
+  });
 }
-
 
 module.exports = {
   validateUser,
@@ -315,5 +335,5 @@ module.exports = {
   deletePlaylist,
   deleteTrack,
   getTrackByID,
-  deleteTrackFromPlaylist
+  deleteTrackFromPlaylist,
 };
