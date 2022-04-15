@@ -13,7 +13,13 @@ function validateUser(args, callback) {
     callback({ error: "Invalid username or password" });
     return;
   }
+
+  // sha256 hash the password 
+  
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND UserPassword = '${password}'`;
+
+ 
+
   query(sql, (result) => {
     if (result.length > 0) {
       const { Username, UserType } = result[0];
@@ -280,6 +286,15 @@ function getTrackByID(args, callback) {
   });
 }
 
+function deleteTrackFromPlaylist(args, callback) {
+  const { playlistID, trackID } = args;
+  const sql = `UPDATE Playlist_Tracks SET IsDeleted = True WHERE PlaylistID = ${playlistID} AND TrackID = ${trackID}`;
+  query(sql, (result) => {
+    callback({ message: "Track succfully deleted" });
+  })
+}
+
+
 module.exports = {
   validateUser,
   getAllUsers,
@@ -299,5 +314,6 @@ module.exports = {
   deleteLibrary,
   deletePlaylist,
   deleteTrack,
-  getTrackByID
+  getTrackByID,
+  deleteTrackFromPlaylist
 };
