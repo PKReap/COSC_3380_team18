@@ -26,15 +26,16 @@ function validateUser(args, callback) {
     if (result.length > 0) {
       const { Username, UserType } = result[0];
       callback({
-        validation: "User logged in successfully",
+        validation: true,
+        message: "User logged in successfully",
         username: Username,
         userType: UserType,
       });
     } else {
-      callback({ validation: "Invalid username or password" });
+      callback({
+        validation: false,
+        message: "Invalid username or password" });
     }
-
-    callback(response);
   });
 }
 
@@ -199,7 +200,7 @@ function userGetAllPlaylists(args, callback) {
 
 function getAllTracksForPlaylist(args, callback) {
   const { playlistID, username } = args;
-  const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID} AND TrackRatings.IsDeleted = False`;
+  const sql = `SELECT * FROM Playlist_Tracks_View JOIN TrackRatings ON Playlist_Tracks_View.TrackID = TrackRatings.TrackID WHERE TrackRatings.Username = '${username}' AND PlaylistID = ${playlistID} AND Playlist_Tracks_View.IsDeleted = False`;
   query(sql, (result) => {
     const response = {
       tracks: result.filter((track) => track.IsDeleted === 0),
