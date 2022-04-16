@@ -15,6 +15,5 @@ axios
     password: "Password123"
   })
   .then(function (response) {
-    const { validation } = response.data;
-    console.log(validation);
+    console.log(response.data);
   });
