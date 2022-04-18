@@ -180,7 +180,7 @@ CREATE TRIGGER on_rating_change
     FOR EACH ROW
     BEGIN
     UPDATE Users
-        SET PlaylistLimit = 5 + FLOOR((SELECT COUNT(Username) FROM TrackRatings WHERE Username = NEW.Username AND Rating > 0 AND IsDeleted == False) / 5)
+        SET PlaylistLimit = 5 + FLOOR((SELECT COUNT(Username) FROM TrackRatings WHERE Username = NEW.Username AND Rating > 0 AND IsDeleted = False) / 5)
         WHERE Username = NEW.Username;
     END; //
 delimiter ;
