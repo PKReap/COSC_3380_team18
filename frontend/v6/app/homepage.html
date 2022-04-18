@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- Style Sheet -->
+    <link rel="stylesheet" href="../styles/homepage.css">
+
+    <!-- Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+
+    <!-- Swiper CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+
+</head>
+
+
+<body class="body-id">
+    <div class="main-body" id="main-body-id">
+        <nav class="sidebar close">
+            <header>
+                <div class="image-text">
+                    <!-- <span class="image">
+                </span> -->
+
+                    <div class="text logo-text">
+                        <span class="name">CISUM</span>
+                    </div>
+                </div>
+
+                <i class='bx bx-chevron-right toggle'></i>
+            </header>
+
+            <div class="menu-bar">
+                <div class="menu">
+
+                    <li class="search-box">
+
+                    </li>
+
+                    <ul class="menu-links">
+                        <li class="">
+                            <button id="modal-profile-btn">
+                                <i class='bx bxs-user icon'></i>
+                                <span class="text nav-text">Profile</span>
+                            </button>
+                        </li>
+                        <li class="" id="upload-music-id">
+                            <!-- <a href="../upload.html">
+                            <span class="text nav-text">Upload</span>
+                        </a> -->
+                            <button id="modal-upload-btn">
+                                <i class='bx bx-upload icon'></i>
+                                <span class="text nav-text">Upload Music</span>
+                            </button>
+                        </li>
+                        <li class="" id="my-songs-id">
+                            <button id="modal-songs-btn">
+                                <i class='bx bx-folder icon'></i>
+                                <span class="text nav-text">My Songs</span>
+                            </button>
+                        </li>
+                        <li class="">
+                            <button id="modal-my-playlist-btn">
+                                <i class='bx bxs-playlist icon'></i>
+                                <span class="text nav-text">My Playlist</span>
+                            </button>
+                        </li>
+                        <li class="">
+                            <button id="modal-playlist-btn">
+                                <i class='bx bx-list-plus icon'></i>
+                                <span class="text nav-text">Create Playlist</span>
+                            </button>
+                        </li>
+
+
+                        <li class="">
+                            <button id="modal-setting-btn">
+                                <i class='bx bxs-wrench icon'></i>
+                                <span class="text nav-text">Settings</span>
+                            </button>
+                        </li>
+
+
+                    </ul>
+                </div>
+
+                <div class="bottom-content">
+                    <li class="">
+                        <a href="./login.html" class = "logout-btn">
+                            <i class='bx bx-log-out icon'></i>
+                            <span class="text nav-text">Logout</span>
+
+                        </a>
+                    </li>
+
+                    <li class="mode">
+                        <div class="sun-moon">
+                            <i class='bx bx-moon icon moon'></i>
+                            <i class='bx bx-sun icon sun'></i>
+                        </div>
+                        <span class="mode-text text">Dark mode</span>
+
+                        <div class="toggle-switch">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+
+                </div>
+            </div>
+        </nav>
+
+
+        <!-- Home Section -->
+        <section class="home">
+
+            <div class="text">
+                <h1 class="home-header">Explore</h1>
+                <!-- Slider Home container -->
+                <div class="thumbTiles swiper">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+                        <!-- Slides -->
+
+                    </div>
+                    <!-- If we need navigation buttons -->
+                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next"></div>
+                </div>
+                <div class = "rank-container" id = "rank-container">
+                    <div class="top-rated-container" id = "top-rated-container">
+                        <div class="top-rated-header">
+                            Top Rated Tracks
+                        </div>
+                        <ul class="top-rated-table" id="top-rated-table">
+                            <!-- <li class="list-item l">
+                                <div class=r-main-con>
+                                    <div class="r-num-con">
+                                        1.
+                                    </div>
+                                    <div class="r-img-con" id="r-img-con">
+                                    </div>
+                                    <div class=r-track-con>
+                                        <div class="r-sn-con">
+                                            Space Man
+                                        </div>
+                                        <div class="r-l-con">
+                                            Don Don Don
+                                        </div>
+                                        <div class="r-gr-con">
+                                            Rap
+                                        </div>
+                                        <div class="r-author-con">
+                                            John Doe
+                                        </div>
+                                        <div class = "r-rating-con">
+                                            5.0
+                                        </div>
+                                    </div>
+                                </div>
+                            </li> -->
+                    </div>
+                    <div class="most-popular-container" id = "most-popular-container">
+                        <div class="most-popular-header">
+                            Most Popular
+                        </div>
+                        <ul class="most-popular-table" id="most-popular-table">
+                            <li class="list-item">
+                                <div class=r-main-con>
+                                    <div class="r-num-con">
+                                        1
+                                    </div>
+                                    <div class="r-img-con" id="r-img-con">
+                                    </div>
+                                    <div class=r-track-con>
+                                        <div class="r-sn-con">
+                                            Space Man
+                                        </div>
+                                        <div class="r-l-con">
+                                            Don Don Don
+                                        </div>
+                                        <div class="r-gr-con">
+                                            Rap
+                                        </div>
+                                        <div class="r-author-con">
+                                            John Doe
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                    </div>
+                
+                </div>
+
+            </div>
+        </section>
+
+
+
+
+        <div class="modal" id="modal-base">
+            <div class="modal-base-content">
+                <span class="close-modal">&times</span>
+                <div class="form-container">
+                    <div class="loader-container" id="loader-container">
+                        <div class="lds-facebook" id="upload-loader">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                    <form class=music-form id=music-form>
+
+                        <div class="music-header">
+                            Upload Music
+                        </div>
+                        <form>
+                            <div class="form-input">
+                                <input type="text" id="track-id" class="track-name" required autocomplete="off">
+                                <br>
+                                <label>Track Name</label>
+                            </div>
+                            <div class="form-input">
+                                <input type="text" id="genre-id" class="genre-name" required autocomplete="off">
+                                <br>
+                                <label>Genre</label>
+                            </div>
+                            <div class="form-input">
+                                <input type="text" id="library-id" class="library-name" required autocomplete="off">
+                                <br>
+                                <label>Library Name</label>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="img-file-id" required accept="image/*">
+                                <label class="custom-file-label" for="customFile">Choose image</label>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="audio-file-id" required
+                                    accept="audio/mpeg">
+                                <label class="custom-file-label" for="customFile">Choose audio</label>
+                            </div>
+                            <div class="form-input form-submit">
+                                <input type="submit" value="Submit" id="submit">
+                            </div>
+                        </form>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-music">
+            <div class="modal-music-content">
+                <div class="icon-header-container">
+                    <div class="vote-container">
+                        <div class="upvote-btn" id="upvote-btn">
+                            <!-- <i class='bx bx-heart icon'></i> -->
+                        </div>
+                        <div class="downvote-btn" id="downvote-btn">
+                            <!-- <i class='bx bx-heart icon'></i> -->
+                        </div>
+                    </div>
+                    <div class="heart-modal-btn" id="heart-modal-btn">
+                        <!-- <i class='bx bx-heart icon'></i> -->
+                    </div>
+                    <div class="rating-container" id="rating-container">
+                        <i class="fa-solid fa-star s1" id='1'></i>
+                        <i class="fa-solid fa-star s2" id='2'></i>
+                        <i class="fa-solid fa-star s3" id='3'></i>
+                        <i class="fa-solid fa-star s4" id='4'></i>
+                        <i class="fa-solid fa-star s5" id='5'></i>
+
+                        <div id="star-number" style="color:rgb(201, 200, 200); margin-left: 1px;"></div>
+
+                    </div>
+                </div>
+                <div class="average-star" id="average-star"></div>
+
+                <div class="form-container" id=music-container>
+                    <div class="image-modal-header" id=image-modal-header>
+                        <!-- <img src = "./mock/images/img1.jpg" class = image-modal> -->
+                    </div>
+                    <div class="image-modal-title" id=image-modal-title>
+
+                    </div>
+                    <div class="image-modal-album" id=image-modal-album>
+                    </div>
+                    <div class="image-modal-artist" id=image-modal-artist>
+                    </div>
+                    <div class="image-modal-genre" id=image-modal-genre>
+                    </div>
+                    <div class="image-modal-audio" id=image-modal-audio>
+
+                    </div>
+
+                    <div class="image-ratio-container">
+                        <div class="image-modal-like" id=image-modal-like>
+                        </div>
+                        <div class="image-modal-dislike" id=image-modal-dislike>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-playlist">
+            <div class="modal-playlist-content">
+                <!-- <span class="close-modal">&times</span> -->
+                <div class="form-container" id=music-container>
+                    <div class="playlist-header create-playlist-header">
+                        Create a new playlist
+                        <div class="form-input">
+                            <input type="text" id="new-playlist-id" name="new-playlist-name" required
+                                autocomplete="off">
+                            <br>
+                            <label></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-my-playlist">
+            <div class="modal-my-playlist-content">
+                <div class="form-container" id=music-container>
+                    <div class="my-playlist-header" id = "my-playlist-header">
+                        My Playlist
+                    </div>
+                    <div class="playlist-name" id="playlist-name">
+                        <ul class="playlist-table" id="playlist-table">
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-my-playlist-song">
+            <div class="modal-my-playlist-content">
+                <div class="form-container" id=music-container>
+                    <div class="my-playlist-header" id="my-playlist-header">
+
+                    </div>
+                    <div class="playlist-songs" id="playlist-songs">
+                        <ul class="playlist-table-songs" id="playlist-table-songs">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-my-song">
+            <div class="modal-my-playlist-content">
+                <div class="form-container" id=music-container>
+                    <div class="my-song-header" id="my-song-header">
+                        My Songs
+                    </div>
+                    <div class="my-songs" id="my-songs">
+                        <ul class="my-songs-table" id="my-songs-table">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="loading-container" id="loading-container-id">
+        <div class="lds-roller">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+        integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+    <script>
+        //Following code for the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+
+    <script src="homepage.js">
+    </script>
+</body>
+
+</html>
