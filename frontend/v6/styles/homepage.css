@@ -1202,7 +1202,7 @@ input:focus {
     color: var(--text-color)
 }
 
-.top-rated-container, .most-popular-container{
+.top-rated-container, .search-container{
     /* background-color: red */
     /* background-color: var(--sidebar-color); */
     border-radius: 10px;
@@ -1213,7 +1213,7 @@ input:focus {
     margin-top:20px;
 }
 
-.top-rated-header, .most-popular-header{
+.top-rated-header, .search-header{
     color: var(--text-color);
     font-size: 30px;
     font-weight: bold;
@@ -1226,7 +1226,7 @@ input:focus {
 
 }
 
-.top-rated-table, .most-popular-table{
+.top-rated-table, .search-table{
     height: 7.5em;
     width: 100%;
     overflow: hidden;
@@ -1235,7 +1235,7 @@ input:focus {
 }
 
 .top-rated-table::-webkit-scrollbar,
-.most-popular-table::-webkit-scrollbar {
+.search-table::-webkit-scrollbar {
     /* display: none; */
 }
 

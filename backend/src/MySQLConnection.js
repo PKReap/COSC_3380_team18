@@ -316,6 +316,40 @@ function deleteTrackFromPlaylist(args, callback) {
   });
 }
 
+
+function getUser(args, callback) {
+  const { username } = args;
+  const sql = `SELECT * FROM Users WHERE Username = '${username}' AND IsDeleted = False`;
+  query(sql, (result) => {
+    callback({ user: result[0] });
+  });
+}
+
+
+function getAllTracksFromArtist(args, callback) {
+  const { artistName } = args;
+  const sql = `SELECT * FROM Library_Tracks_View WHERE ArtistName = '${artistName}' AND IsDeleted = False`;
+  query(sql, (result) => {
+    callback({ tracks: result });
+  });
+}
+
+function getAllTracksForLibrary(args, callback) {
+  const { libraryName } = args;
+  const sql = `SELECT * FROM Library_Tracks_View WHERE LibraryName = '${libraryName}' AND IsDeleted = False`;
+  query(sql, (result) => {
+    callback({ tracks: result });
+  });
+}
+
+function getAllTracksByGenre(args, callback) {
+  const { genre } = args;
+  const sql = `SELECT * FROM Library_Tracks_View WHERE TrackGenre = '${genre}' AND IsDeleted = False ORDER BY AverageRating * (SELECT COUNT(TrackID) FROM TrackRatings WHERE TrackID = Library_Tracks_View.TrackID AND Rating > 0) DESC`;
+  query(sql, (result) => {
+    callback({ tracks: result });
+  });
+}
+
 module.exports = {
   validateUser,
   getAllUsers,
@@ -337,4 +371,8 @@ module.exports = {
   deleteTrack,
   getTrackByID,
   deleteTrackFromPlaylist,
+  getUser,
+  getAllTracksFromArtist,
+  getAllTracksForLibrary,
+  getAllTracksByGenre
 };

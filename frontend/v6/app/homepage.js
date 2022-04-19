@@ -1,13 +1,12 @@
-//Temp Values
-//----------------------------------------------------------------
-const path = "../assets/images/";
-const numOfImages = 15;
-// const username = "Artist1";
-// const username = "User1"
-// const password = "Password123";
-//----------------------------------------------------------------
-
-
+function createElement(tag, params) {
+    const element = document.createElement(tag);
+    const keys = Object.keys(params);
+    for (let key of keys) {
+      element[key] = params[key];
+    }
+    return element;
+  }
+  
 if (localStorage.getItem('uh-music-username') == null || !localStorage.getItem('uh-music-password') == null || !localStorage.getItem('uh-music-username') == null)
 {
 
@@ -17,7 +16,6 @@ else{
     var username = localStorage.getItem("uh-music-username")
     var password = localStorage.getItem("uh-music-password")
     var userType = localStorage.getItem('uh-music-userType')
-
 
     // if(userType == 'Admin'){
     //     window.location.replace("") //Admin Page
@@ -65,6 +63,102 @@ const uploadBtn = document.querySelector("#music-form");
 var starElements = document.querySelectorAll(".fa-star");
 
 const logoutBtn = document.querySelector(".logout-btn")
+
+const serachInput = document.getElementById("search-input");
+
+serachInput.addEventListener("keyup", (e) => {
+    
+    
+    const searchContainer = document.getElementById("search-table");
+    removeAllChildNodes(searchContainer);
+    
+
+        
+        const searchSelected = document.getElementById("search-select").value;
+        const searchInputValue = document.getElementById("search-input").value;
+        let searchUrl;
+        let obj;
+        if(searchSelected == "Artist"){
+            obj = `{\r\n    \"artistName\": \"${searchInputValue}\"\r\n}`
+            searchUrl = "https://uhmusic.xyz/api/getAllTracksFromArtist"
+        }
+        else if(searchSelected == "Album"){
+            obj = `{\r\n    \"libraryName\": \"${searchInputValue}\"\r\n}`
+            searchUrl = "https://uhmusic.xyz/api/getAllTracksForLibrary"
+        }
+        else if(searchSelected == "Genre"){
+            obj = `{\r\n    \"genre\": \"${searchInputValue}\"\r\n}`
+            searchUrl = "https://uhmusic.xyz/api/getAllTracksByGenre"
+        }
+        fetch(searchUrl, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: obj,
+            redirect: "follow",
+        })
+            .then((response) => response.text())
+            .then((data) => {
+                const tracks = JSON.parse(data).tracks;
+                for(let i = 0; i <  tracks.length;i++){
+                    const list_item = createElement("li", {
+                        className: "list-item"
+                    })
+                    const main_con = createElement("div", {
+                        className: "r-main-con",
+                        id: tracks[i].trackID
+                    })
+                    const img_con = createElement("div", {
+                        className: "r-img-con"
+                    })
+                    img_con.style.backgroundImage = `url(${tracks[i].IMG.replace(" ", "%20")})`;
+
+                    const track_con = createElement("div", {
+                        className: "r-track-con",
+                        id: tracks[i].TrackID
+                    });
+                    const sn_con = createElement("div", {
+                        className: "r-sn-con",
+                        innerHTML: tracks[i].TrackName
+                    })
+                    const l_con = createElement("div", {
+                        className: "r-l-con",
+                        innerHTML: tracks[i].LibraryName
+                    });
+                    const gr_con = createElement("div", {
+                        className: "r-gr-con",
+                        innerHTML: tracks[i].TrackGenre
+                    });
+                    const author_con = createElement("div", {
+                        className: "r-author-con",
+                        innerHTML: tracks[i].ArtistName
+                    });
+                    const rating_con = createElement("div", {
+                        className: "r-rating-con",
+                        innerHTML: tracks[i].AverageRating
+                    })
+
+                    main_con.appendChild(img_con);
+                    main_con.appendChild(track_con);
+                    track_con.appendChild(sn_con);
+                    track_con.appendChild(l_con);
+                    track_con.appendChild(gr_con);
+                    track_con.appendChild(author_con);
+                    track_con.appendChild(rating_con);
+                    list_item.appendChild(main_con);
+                    searchContainer.appendChild(list_item);
+
+                }
+            })
+
+        
+        
+    
+})
+
+
+
+
+
 
 logoutBtn.addEventListener("click", () =>{
     localStorage.clear();
@@ -128,33 +222,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById("upload-music-id").style.display = "none";
             document.getElementById("my-songs-id").style.display = "none";
         }
-        // if (!hasValidated) {
-        //     fetch("https://uhmusic.xyz/api/validateUser", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "text/plain",
-        //         },
-        //         body: `{\r\n    \"username\": \"${username}\",\r\n    \"password\": \"${password}\"\r\n}`,
-        //         redirect: "follow",
-        //     })
-        //         .then((response) => response.text())
-        //         .then((data) => {
-        //             data = JSON.parse(data);
-        //             if (data.userType == "User") {
-        //                 document.getElementById(
-        //                     "upload-music-id"
-        //                 ).style.display = "none";
-        //                 document.getElementById("my-songs-id").style.display =
-        //                     "none";
-        //             }
-        //             hasValidated = true;
-        //         })
-        //         .catch((error) => {
-        //             console.log(error);
-        //             console.log(retry);
-        //         });
-        // }
-
         await sleep(1000 + 500 * retryCounter);
 
         if (!hasGottenTracks) {
@@ -183,9 +250,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }
                     }
 
-                    tracks.sort((a, b) =>
-                        a.AverageRating < b.AverageRating ? 1 : -1
-                    );
                     var containerNode =
                         document.getElementById("top-rated-table");
                     removeAllChildNodes(containerNode);
@@ -235,13 +299,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         retryCounter = retryCounter + 1;
     }
     if (window.innerWidth < 1200) {
-        // document.getElementById("most-popular-container").style.display = "none"
+        // document.getElementById("search-container").style.display = "none"
         document.getElementById("top-rated-container").style.width = "100%";
-        document.getElementById("most-popular-container").style.width = "100%";
+        document.getElementById("search-container").style.width = "100%";
         document.getElementById("rank-container").style.display = "block";
     } else {
         document.getElementById("top-rated-container").style.width = "48%";
-        document.getElementById("most-popular-container").style.width = "48%";
+        document.getElementById("search-container").style.width = "48%";
         document.getElementById("rank-container").style.display = "flex";
     }
     document.getElementById("loading-container-id").style.display = "none";
@@ -253,13 +317,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 window.addEventListener("resize", () => {
     console.log(window.innerWidth);
     if (window.innerWidth < 1200) {
-        // document.getElementById("most-popular-container").style.display = "none"
+        // document.getElementById("search-container").style.display = "none"
         document.getElementById("top-rated-container").style.width = "100%";
-        document.getElementById("most-popular-container").style.width = "100%";
+        document.getElementById("search-container").style.width = "100%";
         document.getElementById("rank-container").style.display = "block";
     } else {
         document.getElementById("top-rated-container").style.width = "48%";
-        document.getElementById("most-popular-container").style.width = "48%";
+        document.getElementById("search-container").style.width = "48%";
         document.getElementById("rank-container").style.display = "flex";
     }
 });
@@ -906,40 +970,6 @@ const explorePlaylist = (e) => {
     // myPlaylistSongModal.style.display = "block";
 };
 
-const goToTrack = (e) => {
-    myPlaylistSongModal.style.display = "none";
-    mySongModal.style.display = "none";
-    elementID = e.target.id;
-    _trackID = elementID.substring(
-        elementID.search("id-") + 3,
-        elementID.length
-    );
-
-    fetch("https://uhmusic.xyz/api/getAllTracks", {
-        method: "POST",
-        headers: {
-            "Content-Type": "text/plain",
-        },
-        body: "{\r\n    \r\n}",
-        redirect: "follow",
-    })
-        .then(async (response) => await response.text())
-        .then((data) => {
-            data = JSON.parse(data);
-            for (const key in data["tracks"]) {
-                if (Object.hasOwnProperty.call(data["tracks"], key)) {
-                    var track = data["tracks"][key];
-                    if (track.TrackID == _trackID) {
-                        console.log(track.TrackName);
-                        playMusic(track);
-                    }
-                }
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-};
 
 heartBtn.addEventListener("click", async (e) => {
     console.log(e.target.id);
@@ -1118,19 +1148,6 @@ const insertHtmlElement = async (
     }
 
     node.appendChild(html_to_insert);
-};
-
-const openMusicModal = (data) => {
-    musicModal.style.display = "block";
-    insertHtmlElement("image-modal-header", "img", "class", data.image);
-    insertHtmlElement("image-modal-title", "div", "class", data.song_name);
-    insertHtmlElement("image-modal-artist", "div", "class", data.artist);
-    insertHtmlElement("image-modal-audio", "audio", "class", data.audio);
-    insertHtmlElement("image-modal-like", "div", "class", data.like);
-    insertHtmlElement("image-modal-dislike", "div", "class", data.dislike);
-
-    isModalOn = true;
-    console.log(data);
 };
 
 const removeAllChildNodes = (parent) => {
