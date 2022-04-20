@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="admin.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <script src="./admin.js"></script>
+    <style>
+      tr :hover {
+        background-color: #f5f5f5;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="topnav">
+      <a class="active" href="index.html">Log out</a>
+    </div>
+    <div id="table-wrapper">
+      <div id="table-scroll">
+        <table>
+          <thead>
+            <th>Selection</th>
+            <th>Username</th>
+            <th>User Type</th>
+          </thead>
+          <tbody id="UserTable"></tbody>
+        </table>
+      </div>
+    </div>
+    <select id="operation">
+      <option value="makeUser">Make User</option>
+      <option value="makeArtist">Make Artist</option>
+      <option value="makeAdmin">Make Admin</option>
+      <option value="deleteUser">DELETE</option>
+    </select>
+    <button onclick="performOperation()">go</button>
+    <button id="reportbtn">Report</button>
+    <h1>Report</h1>
+    <input type="range" value="6=" min="2" max="13" oninput="this.nextElementSibling.value = this.value - 1" id="months-slider">
+<output>6</output>
+      <canvas id="myChart" style="width: 100%; max-width: 70%"></canvas>
+  </body>
+</html>
