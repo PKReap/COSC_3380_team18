@@ -34,13 +34,14 @@ function validateUser(args, callback) {
     } else {
       callback({
         validation: false,
-        message: "Invalid username or password" });
+        message: "Invalid username or password",
+      });
     }
   });
 }
 
 function getAllUsers(args, callback) {
-  const sql = "SELECT * FROM Users";
+  const sql = "SELECT * FROM Users WHERE IsDeleted = False";
   query(sql, (result) => {
     const response = {
       users: result.filter((user) => user.IsDeleted === 0),
@@ -110,7 +111,7 @@ function makeAdmin(args, callback) {
 
 function deleteUser(args, callback) {
   const { userName } = args;
-  const sql = `UPDATE Users SET IsDeleted = 1 WHERE Username = ${userName}`;
+  const sql = `UPDATE Users SET IsDeleted = True WHERE Username = "${userName}"`;
   query(sql, (error, result) => {
     if (error) callback({ error: "Error deleting user" });
     else callback({ success: "User succfully deleted" });
@@ -138,7 +139,6 @@ function createPlaylist(args, callback) {
     callback({ message: "Invalid playlist name" });
     return;
   }
-
 
   const getPlaylistLimit = `SELECT * FROM Users WHERE Username = "${username}" AND IsDeleted = False`;
   query(getPlaylistLimit, (result) => {
@@ -219,7 +219,6 @@ function upload(args, callback) {
     return;
   }
 
-
   const fs = require("fs");
   const decodedMusic = Buffer.from(b64Music, "base64");
   const decodedIMG = Buffer.from(b64IMG, "base64");
@@ -253,9 +252,23 @@ function upload(args, callback) {
 
 function userRatesTrack(args, callback) {
   const { username, trackID, rating } = args;
-  const sql = `UPDATE TrackRatings SET Rating = ${rating} WHERE TrackID = ${trackID} AND Username = '${username}' AND IsDeleted = False`;
-  query(sql, (result) => {
-    callback({ success: "Track succfully rated" });
+
+  const checkIfRatingExists = `SELECT * FROM TrackRatings WHERE TrackID = ${trackID} AND Username = "${username}"`;
+  query(checkIfRatingExists, (result) => {
+    if (result.length === 0) {
+      const sql = `INSERT INTO TrackRatings (TrackID, Username, Rating) VALUES (${trackID}, "${username}", 0)`;
+      query(sql, (result) => {
+        const update = `UPDATE TrackRatings SET Rating = ${rating} WHERE TrackID = ${trackID} AND Username = '${username}' AND IsDeleted = False`;
+        query(update, (result) => {
+          callback({ success: "Track succfully rated" });
+        });
+      });
+    } else {
+      const sql = `UPDATE TrackRatings SET Rating = ${rating} WHERE TrackID = ${trackID} AND Username = "${username}"`;
+      query(sql, (result) => {
+        callback({ message: "Track succfully rated" });
+      });
+    }
   });
 }
 function createLibrary(args, callback) {
@@ -267,8 +280,6 @@ function createLibrary(args, callback) {
     callback({ message: "Invalid library name" });
     return;
   }
-
-
 
   const sql = `INSERT INTO Libraries (LibraryName, ArtistName) VALUES ('${libraryName}', '${username}')`;
   query(sql, (result) => {
@@ -316,7 +327,6 @@ function deleteTrackFromPlaylist(args, callback) {
   });
 }
 
-
 function getUser(args, callback) {
   const { username } = args;
   const sql = `SELECT * FROM Users WHERE Username = '${username}' AND IsDeleted = False`;
@@ -324,7 +334,6 @@ function getUser(args, callback) {
     callback({ user: result[0] });
   });
 }
-
 
 function getAllTracksFromArtist(args, callback) {
   const { artistName } = args;
@@ -374,5 +383,5 @@ module.exports = {
   getUser,
   getAllTracksFromArtist,
   getAllTracksForLibrary,
-  getAllTracksByGenre
+  getAllTracksByGenre,
 };

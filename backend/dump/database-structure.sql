@@ -199,3 +199,6 @@ UPDATE Users SET UserPassword = "0f9776d02808a35d76bb18b6215b091cb592806b913469e
 UPDATE Users SET UserPassword = "742ebf46c0773cb3f7299d02839ca3b66f70be91f0576fa24cc800bcc0ca8cc7" WHERE Username = "User1";
 
 UPDATE Users SET UserPassword = "625089b9a6aea286ad1795d1f877928741d702e38e4be85417b5558160e58914" WHERE Username = "Artist1";
+
+-- SET ALL RATINGS TO 1
+SELECT * FROM Playlist_Tracks_View;
