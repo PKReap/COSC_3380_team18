@@ -42,8 +42,11 @@
     <button onclick="performOperation()">go</button>
     <button id="reportbtn">Report</button>
     <h1>Report</h1>
-    <input type="range" value="6=" min="2" max="13" oninput="this.nextElementSibling.value = this.value - 1" id="months-slider">
-<output>6</output>
-      <canvas id="myChart" style="width: 100%; max-width: 70%"></canvas>
+
+      <canvas id="genreChart" style="width: 100%; max-width: 70%"></canvas>
+      <canvas id="barChar2" style="width: 100%; max-width: 70%"></canvas>
+      <canvas id="barChar3" style="width: 100%; max-width: 70%"></canvas>
+      <input type="range" value="6" min="2" max="13" oninput="this.nextElementSibling.value = this.value - 1" id="months-slider">
+      <output>6</output>
   </body>
 </html>

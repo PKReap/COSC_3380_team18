@@ -66,7 +66,8 @@ function performOperation() {
   });
 }
 
-function makeBarChart(usersRegistered, ctx) {
+function makeBarChart(usersRegistered, ctx, title) {
+  
   const xValues = [];
   for (let i = usersRegistered.length - 1; i >= 2; i--) {
     xValues.push(`${i} Months Ago`);
@@ -104,7 +105,7 @@ function makeBarChart(usersRegistered, ctx) {
       labels: xValues,
       datasets: [
         {
-          label: "Users",
+          label: title,
           data: yValues,
           backgroundColor: barColors,
         },
@@ -112,10 +113,7 @@ function makeBarChart(usersRegistered, ctx) {
     },
     options: {
       legend: { display: false },
-      // turn hover off
-      hover: {
-        animationDuration: 0,
-      },
+
       animation: {
         duration: 400,
         onComplete: function () {
@@ -136,7 +134,7 @@ function makeBarChart(usersRegistered, ctx) {
       // add  a title with font size 20
       title: {
         display: true,
-        text: "Users Registered",
+        text: title,
         fontSize: 20,
       },
 
@@ -186,13 +184,13 @@ function makeBarChart(usersRegistered, ctx) {
   });
 }
 
-function fillChart(months, ctx) {
+function fillChart(months, ctx, endpoint, title) {
   $.ajax({
-    url: host + "usersRegisteredReport",
+    url: host + endpoint,
     type: "POST",
     data: JSON.stringify({ months }),
     success: (data) => {
-      makeBarChart(data.months, ctx);
+      makeBarChart(data.months, ctx, title);
     },
     error: (err) => {
       console.log(err);
@@ -200,9 +198,8 @@ function fillChart(months, ctx) {
   });
 }
 
-let num = 3;
 
-function genreReport(Genres) {
+function genreReport(Genres, ctx) {
   const genres = Genres.map((genre) => genre.TrackGenre);
   const ammounts = Genres.map((genre) => genre.Total);
   const getRandomColor = () => {
@@ -214,6 +211,11 @@ function genreReport(Genres) {
   });
   console.log(genres);
   const options = {
+    title: {
+      display: true,
+      text: "Genres",
+      fontSize: 20,
+    },
     tooltips: {
       enabled: true,
     },
@@ -228,7 +230,7 @@ function genreReport(Genres) {
       },
     },
   };
-  new Chart("myChart", {
+  new Chart("genreChart", {
     type: "pie",
     data: {
       labels: genres,
@@ -243,12 +245,13 @@ function genreReport(Genres) {
   });
 }
 
-function getGenres() {
+function getGenres(ctx) {
   $.ajax({
     url: host + "genreReport",
     type: "POST",
     data: JSON.stringify({}),
     success: (data) => {
+    
       genreReport(data.genres);
     },
     error: (err) => {
@@ -259,5 +262,17 @@ function getGenres() {
 
 document.addEventListener("DOMContentLoaded", () => {
   getAllUsers();
-  getGenres();
+  const genreChart = document.getElementById("genreChart").getContext("2d");
+  const barChart2 = document.getElementById("barChar2").getContext("2d");
+  const barChar3 = document.getElementById("barChar3").getContext("2d");
+  getGenres(genreChart);
+  const months_slider = document.getElementById("months-slider");
+
+  months_slider.addEventListener("change", (e) => {
+    fillChart(e.target.value, barChart2, "usersRegisteredReport", "Users Registered");
+    fillChart(e.target.value, barChar3, "TracksAddedReport", "Tracks Added");
+  });
+  
+  fillChart(6, barChart2, "usersRegisteredReport", "Users Registered");
+  fillChart(6, barChar3, "TracksAddedReport", "Tracks Added");
 });
