@@ -20,6 +20,9 @@
   <body>
     <div class="topnav">
       <a class="active" href="index.html">Log out</a>
+      <a onclick="turnOnGenre()">Genre</a>
+      <a onclick="turnOnUsers()">Users</a>
+      <a onclick="turnOnTracks()">Tracks</a>
     </div>
     <div id="table-wrapper">
       <div id="table-scroll">
@@ -28,25 +31,36 @@
             <th>Selection</th>
             <th>Username</th>
             <th>User Type</th>
+            <th>Date Added</th>
           </thead>
           <tbody id="UserTable"></tbody>
         </table>
       </div>
-    </div>
-    <select id="operation">
-      <option value="makeUser">Make User</option>
-      <option value="makeArtist">Make Artist</option>
-      <option value="makeAdmin">Make Admin</option>
-      <option value="deleteUser">DELETE</option>
-    </select>
-    <button onclick="performOperation()">go</button>
-    <button id="reportbtn">Report</button>
-    <h1>Report</h1>
+      <select id="operation">
+        <option value="makeUser">Make User</option>
+        <option value="makeArtist">Make Artist</option>
+        <option value="makeAdmin">Make Admin</option>
+        <option value="deleteUser">DELETE</option>
+      </select>
+      <button onclick="performOperation()">go</button>
+        <!-- put an input of numbers here -->
 
-      <canvas id="genreChart" style="width: 100%; max-width: 70%"></canvas>
-      <canvas id="barChar2" style="width: 100%; max-width: 70%"></canvas>
-      <canvas id="barChar3" style="width: 100%; max-width: 70%"></canvas>
-      <input type="range" value="6" min="2" max="13" oninput="this.nextElementSibling.value = this.value - 1" id="months-slider">
-      <output>6</output>
+        <div>
+          <input type="number" id="months-number" min="2" max="13" placeholder="Months">
+          
+          <canvas id="Users-Registered" style="max-width: 50%"></canvas>          
+        </div>
+    </div>
+    <div id="genre-wrapper">
+      <canvas id="genre-chart"></canvas>
+    </div>
+    <div id="tracks-wrapper">
+      
+      <div>
+        <canvas id="tracks-uploaded-chart" style="max-width: 50%"></canvas>
+      </div>
+      <input type="text" id="artist-name" placeholder="Enter Artist Name">
+      <canvas id="artist-uploads-chart" style="max-width: 50%""></canvas>
+    </div>
   </body>
 </html>

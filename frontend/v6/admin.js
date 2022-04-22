@@ -18,7 +18,7 @@ function getAllUsers() {
     success: (data) => {
       const { users } = data;
       users.forEach((user) => {
-        const { Username, UserType } = user;
+        const { Username, UserType, RegistrationDate } = user;
         const row = createElement("tr", {});
         const userID = createElement("td", {});
         userID.appendChild(
@@ -31,6 +31,7 @@ function getAllUsers() {
           userID,
           createElement("td", { innerHTML: Username }),
           createElement("td", { innerHTML: UserType }),
+          createElement("td", { innerHTML: RegistrationDate }),
         ];
         columns.forEach((column) => {
           row.appendChild(column);
@@ -42,6 +43,12 @@ function getAllUsers() {
       alert(JSON.stringify(err));
     },
   });
+}
+
+function removeNodes(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
 }
 
 function performOperation() {
@@ -57,7 +64,9 @@ function performOperation() {
       type: "POST",
       data: JSON.stringify({ userName: value }),
       success: (data) => {
-        window.location.reload();
+        const tbody = document.getElementById("UserTable");
+        removeNodes(tbody);
+        getAllUsers();
       },
       error: (err) => {
         console.log(`Failed: ${operation} ${value}`);
@@ -65,9 +74,9 @@ function performOperation() {
     });
   });
 }
-
-function makeBarChart(usersRegistered, ctx, title) {
-  
+let mychart;
+function makeBarChart(usersRegistered, title, name) {
+  const ctx = document.getElementById(name).getContext("2d");
   const xValues = [];
   for (let i = usersRegistered.length - 1; i >= 2; i--) {
     xValues.push(`${i} Months Ago`);
@@ -75,32 +84,12 @@ function makeBarChart(usersRegistered, ctx, title) {
   xValues.push("Last Month");
   xValues.push("This Month");
 
-  // calc teh average but round it
-  const average = Math.round(
-    usersRegistered.reduce((a, b) => a + b, 0) / usersRegistered.length
-  );
-  // lime greee as hex
-  const aboveColor = "#53EF29";
-  const belowColor = "#FE1818";
-  const equalColor = "#12E9D5";
-
-  const asign = (value) => {
-    if (value > average) {
-      return aboveColor;
-    } else if (value < average) {
-      return belowColor;
-    } else {
-      return equalColor;
-    }
-  };
-
-  const barColors = usersRegistered.map((value) => {
-    return asign(value);
-  });
+  const barColors = usersRegistered.map((value) => "#12E9D5");
   const yValues = usersRegistered;
-  // create a bar chart in intervals of integers
-  const chart = new Chart(ctx, {
+  if (mychart) mychart.destroy();
+  mychart = new Chart(name, {
     type: "bar",
+
     data: {
       labels: xValues,
       datasets: [
@@ -113,70 +102,43 @@ function makeBarChart(usersRegistered, ctx, title) {
     },
     options: {
       legend: { display: false },
-
-      animation: {
-        duration: 400,
-        onComplete: function () {
-          const chartInstance = this.chart,
-            ctx = chartInstance.ctx;
-          ctx.font = Chart.helpers.fontString(
-            16,
-            Chart.defaults.global.defaultFontStyle,
-            Chart.defaults.global.defaultFontFamily
-          );
-          ctx.fillStyle = equalColor;
-
-          ctx.textAlign = "center";
-          ctx.textBaseline = "top";
-          ctx.fillText(`Average: ${average}`, chartInstance.width * 0.9, 0);
-        },
-      },
-      // add  a title with font size 20
-      title: {
-        display: true,
-        text: title,
-        fontSize: 20,
-      },
-
       scales: {
         yAxes: [
           {
-            // add numbers on top of the bars
             ticks: {
-              max: Math.max(...yValues) + 1,
               beginAtZero: true,
-              userCallback: function (label, index, labels) {
-                if (Math.floor(label) === label) {
-                  return label;
-                }
+              callback: function (value) {
+                return value + " Users";
               },
             },
           },
         ],
       },
-      xAxes: [
+      title: {
+        display: true,
+        text: title,
+        fontSize: 20,
+      },
+      hover: {
+        display: false,
+      },
+      yAxes: [
         {
-          gridLines: {
-            display: false,
-          },
           ticks: {
+            max: Math.max(...yValues) + 1,
             beginAtZero: true,
+            userCallback: function (label, index, labels) {
+              if (Math.floor(label) === label) {
+                return label;
+              }
+            },
           },
         },
       ],
-    },
-    annotation: {
-      annotations: [
+      xAxes: [
         {
-          type: "line",
-          mode: "horizontal",
-          scaleID: "y-axis-0",
-          value: 5,
-          borderColor: "rgb(75, 192, 192)",
-          borderWidth: 4,
-          label: {
-            enabled: false,
-            content: "Test label",
+          ticks: {
+            beginAtZero: true,
           },
         },
       ],
@@ -184,13 +146,13 @@ function makeBarChart(usersRegistered, ctx, title) {
   });
 }
 
-function fillChart(months, ctx, endpoint, title) {
+function fillChart(months, endpoint, title, name) {
   $.ajax({
     url: host + endpoint,
     type: "POST",
     data: JSON.stringify({ months }),
     success: (data) => {
-      makeBarChart(data.months, ctx, title);
+      makeBarChart(data.months, title, name);
     },
     error: (err) => {
       console.log(err);
@@ -198,9 +160,8 @@ function fillChart(months, ctx, endpoint, title) {
   });
 }
 
-
-function genreReport(Genres, ctx) {
-  const genres = Genres.map((genre) => genre.TrackGenre);
+function genreReport(Genres) {
+  const genres = Genres.map((genre) => `${genre.TrackGenre} ${genre.Total}`);
   const ammounts = Genres.map((genre) => genre.Total);
   const getRandomColor = () => {
     return "#" + ((Math.random() * 0xffffff) << 0).toString(16);
@@ -209,7 +170,6 @@ function genreReport(Genres, ctx) {
   const barColors = genres.map((genre) => {
     return getRandomColor();
   });
-  console.log(genres);
   const options = {
     title: {
       display: true,
@@ -230,7 +190,7 @@ function genreReport(Genres, ctx) {
       },
     },
   };
-  new Chart("genreChart", {
+  new Chart("genre-chart", {
     type: "pie",
     data: {
       labels: genres,
@@ -245,13 +205,12 @@ function genreReport(Genres, ctx) {
   });
 }
 
-function getGenres(ctx) {
+function getGenres() {
   $.ajax({
     url: host + "genreReport",
     type: "POST",
     data: JSON.stringify({}),
     success: (data) => {
-    
       genreReport(data.genres);
     },
     error: (err) => {
@@ -260,19 +219,177 @@ function getGenres(ctx) {
   });
 }
 
+function turnOnUsers() {
+  const table_wrapper = document.getElementById("table-wrapper");
+  const chart_wrapper = document.getElementById("genre-wrapper");
+  const tracks_wrapper = document.getElementById("tracks-wrapper");
+  table_wrapper.style.display = "block";
+  tracks_wrapper.style.display = "none";
+  chart_wrapper.style.display = "none";
+  fillChart(
+    13,
+    "usersRegisteredReport",
+    "Users Registered",
+    "Users-Registered"
+  );
+}
+
+function turnOnGenre() {
+  const table_wrapper = document.getElementById("table-wrapper");
+  const chart_wrapper = document.getElementById("genre-wrapper");
+  const tracks_wrapper = document.getElementById("tracks-wrapper");
+
+  table_wrapper.style.display = "none";
+  chart_wrapper.style.display = "block";
+  tracks_wrapper.style.display = "none";
+
+}
+
+function turnOnTracks() {
+  const table_wrapper = document.getElementById("table-wrapper");
+  const chart_wrapper = document.getElementById("genre-wrapper");
+  const tracks_wrapper = document.getElementById("tracks-wrapper");
+
+  table_wrapper.style.display = "none";
+  chart_wrapper.style.display = "none";
+  tracks_wrapper.style.display = "block";
+  fillChart(
+    13,
+    "TracksAddedReport",
+    "Tracks Uploaded Past 12 Months",
+    "tracks-uploaded-chart"
+  );
+}
+
+let artistChart;
+function makeArtistChart(uploads, title, name) {
+  const ctx = document.getElementById(name).getContext("2d");
+  const xValues = [];
+  for (let i = uploads.length - 1; i >= 2; i--) {
+    xValues.push(`${i} Months Ago`);
+  }
+  xValues.push("Last Month");
+  xValues.push("This Month");
+
+  const barColors = uploads.map((value) => "#12E9D5");
+  const yValues = uploads;
+  if (artistChart) artistChart.destroy();
+  artistChart = new Chart(name, {
+    type: "bar",
+
+    data: {
+      labels: xValues,
+      datasets: [
+        {
+          label: title,
+          data: yValues,
+          backgroundColor: barColors,
+        },
+      ],
+    },
+    options: {
+      legend: { display: false },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+              callback: function (value) {
+                return value + " Tracks";
+              },
+            },
+          },
+        ],
+      },
+      title: {
+        display: true,
+        text: title,
+        fontSize: 20,
+      },
+      hover: {
+        display: false,
+      },
+      yAxes: [
+        {
+          ticks: {
+            max: Math.max(...yValues) + 1,
+            beginAtZero: true,
+            userCallback: function (label, index, labels) {
+              if (Math.floor(label) === label) {
+                return label;
+              }
+            },
+          },
+        },
+      ],
+      xAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
+    },
+  });
+}
+
+
+function makeArtistUploadsReport(artistName){
+  $.ajax({
+    url: host + "getUploadsPerMonthForArtist",
+    type: "POST",
+    data: JSON.stringify({artistName, months: 13}),
+    success: (data) => {
+      makeArtistChart(data.months, `${artistName} Uploads`, "artist-uploads-chart");
+    },
+    error: (err) => {
+      console.log(err);
+    },
+  });
+
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   getAllUsers();
-  const genreChart = document.getElementById("genreChart").getContext("2d");
-  const barChart2 = document.getElementById("barChar2").getContext("2d");
-  const barChar3 = document.getElementById("barChar3").getContext("2d");
-  getGenres(genreChart);
-  const months_slider = document.getElementById("months-slider");
+  getGenres();
+  fillChart(
+    13,
+    "usersRegisteredReport",
+    "Users Registered",
+    "Users-Registered"
+  );
+  fillChart(
+    13,
+    "TracksAddedReport",
+    "Tracks Uploaded Past 12 Months",
+    "tracks-uploaded-chart"
+  );
 
-  months_slider.addEventListener("change", (e) => {
-    fillChart(e.target.value, barChart2, "usersRegisteredReport", "Users Registered");
-    fillChart(e.target.value, barChar3, "TracksAddedReport", "Tracks Added");
+  const table_wrapper = document.getElementById("table-wrapper");
+  table_wrapper.style.display = "none";
+
+  const tracks_wrapper = document.getElementById("tracks-wrapper");
+  tracks_wrapper.style.display = "none";
+
+  const months_number = document.getElementById("months-number");
+  months_number.addEventListener("change", (e) => {
+    const months = e.target.value;
+
+    if (months > 13) months = 13;
+    if (months < 2) months = 2;
+
+    fillChart(
+      months,
+      "usersRegisteredReport",
+      "Users Registered",
+      "Users-Registered"
+    );
   });
-  
-  fillChart(6, barChart2, "usersRegisteredReport", "Users Registered");
-  fillChart(6, barChar3, "TracksAddedReport", "Tracks Added");
+
+  const artist_name = document.getElementById("artist-name");
+  artist_name.addEventListener("keyup", (e) => {
+    if (e.keyCode === 13) {
+      makeArtistUploadsReport(artist_name.value);
+    }
+  })
 });
