@@ -40,7 +40,7 @@ Inside of it is an implemtation of our triggers and all our schema structure.
 
 The only difference between whats on the actual server is that connection.js is reading config.json instead of config-test.json
 
-The way we implemented uploading is that the server recieves the files and stores in folder and in the database we store a link to where its stored.
+The way we implemented uploading is that the server recieves the files and stores it in a folder and in the database we store a link to where its stored.
 
 If you want to run it locally with the frontend, do a ctrl-f find all on "uhmusic.xyz" and change them to "localhost:3000" on all .js files in the frontend.
 
