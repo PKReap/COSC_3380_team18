@@ -1,22 +1,6 @@
 The code submitted contains the frontend and backend. For the frontend it contains
 
-homepage.html 
-
-homepage.js 
-
-login.html 
-
-login js 
-
-homepage.css 
-
-login.css 
-
-admin.css 
-
-admim.html 
-
-admin.js
+homepage.html, homepage.js ,index.html, login.js , styles/homepage.css, styles/login.css, admin.css, admim.html , admin.js
 
 homepage.html contains the skeleton of the page the css styles it completely. The style we were going for was essential a netflix and spotify combination to explain our homepage contains a slider which is simillar to netflix homepage and spotify was also a inspiration for the frontend via the rating system and player.
 
