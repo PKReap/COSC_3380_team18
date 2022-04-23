@@ -5,6 +5,7 @@ const connection = mysql.createConnection(config);
 function connect() {
   connection.connect();
 }
+
 function query(sql, callback) {
   connection.query(sql, (err, results) => {
     if (err) throw err;
