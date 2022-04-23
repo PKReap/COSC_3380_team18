@@ -110,47 +110,38 @@ delimiter ;
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Dubstep", "Artist1", "Electronic", "https://www.bensound.com/bensound-music/bensound-dubstep.mp3", "Dance Dance Revolution", "https://www.bensound.com/bensound-img/dubstep.jpg");
--- Insert dubstep into Dance Dance Revolution
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 1);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Better Days", "Artist1", "Contry","https://www.bensound.com/bensound-music/bensound-betterdays.mp3", "Electric Boogaloo", "https://www.bensound.com/bensound-img/betterdays.jpg");
--- Insert Better Days into Electric Boogaloo
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 2);
  
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Funny Song", "Artist1", "Parody","https://www.bensound.com/bensound-music/bensound-funnysong.mp3", "Electric Boogaloo", "https://www.bensound.com/bensound-img/betterdays.jpg");
--- Insert Funny Song into Electric Boogaloo
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 3);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Slow Motion", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-slowmotion.mp3", "Electric Boogaloo", "https://www.bensound.com/bensound-img/sunny.jpg");
--- Insert Slow Motion into Electric Boogaloo
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 4);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Adventure", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-adventure.mp3", "Dance Dance Revolution","https://www.bensound.com/bensound-img/energy.jpg");
--- Insert Adventure into Dance Dance Revolution
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 5);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Inspire", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-inspire.mp3", "Dance Dance Revolution", "https://www.bensound.com/bensound-img/indiebox.jpg");
--- Insert Inspire into Dance Dance Revolution
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 6);  
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Evolution", "Artist1", "Ambiance", "https://www.bensound.com/bensound-music/bensound-evolution.mp3", "Dance Dance Revolution", "https://www.bensound.com/bensound-img/slowmotion.jpg");
--- Insert Evolution into Dance Dance Revolution
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (1, 7);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Piano Moment", "Artist1", "Classical",  "https://www.bensound.com/bensound-music/bensound-pianomoment.mp3", "Electric Boogaloo", "https://www.bensound.com/bensound-img/clearday.jpg");
--- Insert Piano Moment into Electric Boogaloo
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 8);
 
 INSERT INTO Tracks (TrackName, ArtistName, TrackGenre, Link, LibraryName, IMG) 
 VALUES("Dance", "Artist1", "Pop", "https://www.bensound.com/bensound-music/bensound-dance.mp3", "Electric Boogaloo", "https://www.bensound.com/bensound-img/evolution.jpg");
--- Insert Dance into Electric Boogaloo
 INSERT INTO Library_Tracks (LibraryID, TrackID) VALUES (2, 9);
 
 INSERT INTO Playlists(PlaylistName, Username) VALUES ("Playlist1", "User1");
@@ -162,7 +153,6 @@ INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 2, 0);
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 3, 0);
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 4, 0);
 INSERT INTO TrackRatings (Username, TrackID, Rating) VALUES ("User1", 5, 0);
--- create a view with tracks and playlist ID with the user's rating
 CREATE VIEW Playlist_Tracks_View AS
     SELECT Playlist_Tracks.PlaylistID, Playlist_Tracks.TrackID, Tracks.TrackName, Tracks.ArtistName, Tracks.TrackGenre, Tracks.Link, Tracks.LibraryName, Tracks.IMG,
     Playlist_Tracks.IsDeleted
