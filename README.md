@@ -50,4 +50,5 @@ Change config-test.json match your credentials for your hosted database.
 
 To start the server make sure you have node and npm installed. 
 
+-- Inside the backend directory --
 Install all the packages with "npm install" then run "npm start" to start the server.
