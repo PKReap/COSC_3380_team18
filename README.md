@@ -43,3 +43,11 @@ The only difference between whats on the actual server is that connection.js is 
 The way we implemented uploading is that the server recieves the files and stores in folder and in the database we store a link to where its stored.
 
 If you want to run it locally with the frontend, do a ctrl-f find all on "uhmusic.xyz" and change them to "localhost:3000" on all .js files in the frontend.
+
+Use any of the files in backend/dump to generate the database. 
+
+Change config-test.json match your credentials for your hosted database.
+
+To start the server make sure you have node and npm installed. 
+
+Install all the packages with "npm install" then run "npm start" to start the server.
