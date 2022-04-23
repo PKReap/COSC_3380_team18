@@ -8,7 +8,7 @@ Then the homepage.js essential was calling the backend to perform operation on t
 
 The admin page on the other hand has the list of users and operation to delete, change user type it also contain the reports for the genres, users added, and tracks added. The admin.js calls the backend.
 
-For the backend folder contains the sql dump and the node js file which create the sql qureies as api call.
+For the backend folder contains the sql dump and the node js file which create the sql qureies.
 
 http://uhmusic.xyz/
 Admin- Admin1 Password123
