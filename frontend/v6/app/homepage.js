@@ -68,7 +68,7 @@ const serachInput = document.getElementById("search-input");
 
 serachInput.addEventListener("keyup", (e) => {
     
-    
+	if(e.keyCode === 13){    
     const searchContainer = document.getElementById("search-table");
     removeAllChildNodes(searchContainer);
     
@@ -152,7 +152,7 @@ serachInput.addEventListener("keyup", (e) => {
 
         
         
-    
+    }
 })
 
 
@@ -605,7 +605,7 @@ createPlaylist.addEventListener("keypress", (e) => {
         })
             .then((response) => response.text())
             .then((result) => {
-                console.log(result);
+                alert(result);
                 playlistModal.style.display = "none";
                 isModalOn = false;
             })
