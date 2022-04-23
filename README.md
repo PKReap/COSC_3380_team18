@@ -16,7 +16,7 @@ User- User1 Password123
 Artist- Artist1 Password123
 
 
-The back end contains server.js which is the main server loop runs our server. 
+The back end contains server.js which is the main server loop that runs our server. 
 
 It only accepts POSTS requests and we are using pm2 to run the server.js forever on the server.
 
