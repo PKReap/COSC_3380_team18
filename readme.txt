@@ -10,3 +10,13 @@ For the backend folder contains the sql dump and the node js file which create t
 
 
 
+
+http://uhmusic.xyz/ 
+Admin- Admin1 Password123
+User- User1 Password123
+Artist- Artist1 Password123
+
+
+
+
+
